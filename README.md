@@ -1,2 +1,2 @@
 # Catify-WebPlayer
-An web application witch you can listen to music and also create your own playlists and share with friends.
+A web application in which you can listen to music, create your own playlists, and share with friends.
