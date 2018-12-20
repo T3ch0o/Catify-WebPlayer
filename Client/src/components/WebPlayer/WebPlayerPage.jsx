@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ViewComponent from "./ViewComponent";
-import MusicPlayer from './PlaylistComponent/partials/MusicPlayer';
+import MusicPlayer from './partials/MusicPlayer';
 import querystring from 'query-string';
 
 class WebPlayerPage extends Component {
