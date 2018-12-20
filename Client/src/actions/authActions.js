@@ -1,11 +1,17 @@
 import { AUTHORIZATION_SUCCESS, REDIRECTED } from "./actionTypes";
 import { beginAction } from './ajaxActions';
-import remote from "../utils/remote";
+import user from "../api/UserAPI";
 
 function success() {
     return {
         type: AUTHORIZATION_SUCCESS
     };
+}
+
+function saveToLocalStorage(response) {
+    localStorage.setItem('user', response.username);
+    localStorage.setItem('authToken', response._kmd.authtoken);
+    localStorage.setItem('role', response.role);
 }
 
 export function redirectToPage() {
@@ -17,11 +23,9 @@ export function redirectToPage() {
 export function registerAction(payload) {
     return function(dispatch) {
         dispatch(beginAction());
-        return remote.register(payload)
+        return user.register(payload)
             .then(response => {
-                localStorage.setItem('user', response.username);
-                localStorage.setItem('authToken', response._kmd.authtoken);
-                localStorage.setItem('role', response.role);
+                saveToLocalStorage(response);
                 dispatch(success());
             });
     };
@@ -30,11 +34,9 @@ export function registerAction(payload) {
 export function loginAction(payload) {
     return function(dispatch) {
         dispatch(beginAction());
-        return remote.login(payload)
+        return user.login(payload)
             .then(response => {
-                localStorage.setItem('user', response.username);
-                localStorage.setItem('authToken', response._kmd.authtoken);
-                localStorage.setItem('role', response.role);
+                saveToLocalStorage(response);
                 dispatch(success());
             });
     };
@@ -42,7 +44,7 @@ export function loginAction(payload) {
 
 export function logoutAction() {
     return function(dispatch) {
-        remote.logout()
+        user.logout()
             .then(response => {
                 localStorage.clear();
             });
@@ -51,12 +53,12 @@ export function logoutAction() {
 
 export function userAction() {
     return function(dispatch) {
-        return remote.getUser();
+        return user.get();
     }
 }
 
 export function updateUserAction(payload, id) {
     return function(dispatch) {
-        return remote.updateUser(payload, id);
+        return user.update(payload, id);
     }
 }
