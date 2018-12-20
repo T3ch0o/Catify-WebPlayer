@@ -1,5 +1,5 @@
 import { REQUEST_PLAYLISTS, REQUEST_PLAYLIST } from './actionTypes';
-import remote from "../utils/remote";
+import playlist from "../api/PlaylistAPI";
 import { errorAction, successAction, beginAction } from './ajaxActions';
 
 function requestPlaylists(data) {
@@ -19,7 +19,7 @@ function requestPlaylist(data) {
 export function requestPlaylistsAction() {
     return function(dispatch) {
         dispatch(beginAction());
-        remote.getPlaylists()
+        playlist.getAll()
             .then(data => {
                 dispatch(requestPlaylists(data));
                 dispatch(successAction());
@@ -30,7 +30,7 @@ export function requestPlaylistsAction() {
 
 export function createPlaylistAction(payload) {
     return function(dispatch) {
-        return remote.createPlaylist(payload)
+        return playlist.create(payload)
             .catch(error => dispatch(errorAction()));
     }
 }
@@ -38,7 +38,7 @@ export function createPlaylistAction(payload) {
 export function getMusicTitleAction(link) {
     return function(dispatch) {
         dispatch(beginAction());
-        return remote.getMusicTitle(link)
+        return playlist.getMusicTitle(link)
             .catch(error => dispatch(errorAction()));
     }
 }
@@ -47,7 +47,7 @@ export function getMusicTitleAction(link) {
 export function editPlaylistAction(payload, id) {
     return function(dispatch) {
         dispatch(beginAction());
-        return remote.editPlaylist(payload, id)
+        return playlist.edit(payload, id)
             .then(data => {
                 dispatch(successAction());
             })
@@ -58,7 +58,7 @@ export function editPlaylistAction(payload, id) {
 export function updatePlaylistAction(payload, id) {
     return function(dispatch) {
         dispatch(beginAction());
-        return remote.updatePlaylist(payload, id)
+        return playlist.update(payload, id)
             .then(data => {
                 dispatch(successAction());
             })
@@ -69,7 +69,7 @@ export function updatePlaylistAction(payload, id) {
 export function deletePlaylist(id) {
     return function(dispatch) {
         dispatch(beginAction());
-        return remote.deletePlaylist(id)
+        return playlist.delete(id)
             .catch(error => dispatch(errorAction()));
     }
 }
@@ -77,7 +77,7 @@ export function deletePlaylist(id) {
 export function requestPlaylistAction(id) {
     return function(dispatch) {
         dispatch(beginAction());
-        return remote.getPlaylist(id)
+        return playlist.get(id)
             .then(data => {
                 dispatch(requestPlaylist(data));
                 dispatch(successAction());
