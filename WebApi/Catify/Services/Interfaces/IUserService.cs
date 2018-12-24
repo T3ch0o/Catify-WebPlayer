@@ -10,5 +10,7 @@
         Task<string> Authenticate(string username, string password);
 
         Task<string> Register(RegisterBindingModel model);
+
+        Task Logout();
     }
 }
