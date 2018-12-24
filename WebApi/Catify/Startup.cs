@@ -4,6 +4,9 @@
 
     using Catify.Data;
     using Catify.Entities;
+    using Catify.Middlewares;
+    using Catify.Services;
+    using Catify.Services.Interfaces;
 
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
@@ -26,8 +29,6 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
             services.AddDbContext<CatifyDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -41,13 +42,15 @@
                 options.Password.RequiredUniqueChars = 0;
                 options.Password.RequiredLength = 3;
             })
-                .AddEntityFrameworkStores<CatifyDbContext>()
-                .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<CatifyDbContext>();
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // Configure strongly typed settings objects
 
             IConfigurationSection jwtSettingsSection = Configuration.GetSection("JwtSettings");
             services.Configure<JwtSettings>(jwtSettingsSection);
+            services.AddScoped<IUserService, UserService>();
 
             // Configure JWT authentication
 
@@ -67,7 +70,8 @@
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false, ValidateAudience = false
+                    ValidateIssuer = false,
+                    ValidateAudience = false
                 };
             });
         }
@@ -83,6 +87,7 @@
                 app.UseHsts();
             }
 
+            app.UseSeedDataMiddleware();
             app.UseAuthentication();
 
             app.UseHttpsRedirection();
