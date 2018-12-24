@@ -1,6 +1,7 @@
 ﻿namespace Catify.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.IdentityModel.Tokens.Jwt;
     using System.Linq;
     using System.Security.Claims;
@@ -8,7 +9,6 @@
     using System.Threading.Tasks;
 
     using Catify.BindingModels;
-    using Catify.Data;
     using Catify.Entities;
     using Catify.Services.Interfaces;
 
@@ -18,20 +18,16 @@
 
     public class UserService : IUserService
     {
-        private readonly CatifyDbContext _db;
-
         private readonly JwtSettings _jwtSettings;
 
         private readonly SignInManager<CatifyUser> _signInManager;
 
         private readonly UserManager<CatifyUser> _userManager;
 
-        public UserService(CatifyDbContext db,
-                           IOptions<JwtSettings> jwtSettings,
+        public UserService(IOptions<JwtSettings> jwtSettings,
                            SignInManager<CatifyUser> singInManager,
                            UserManager<CatifyUser> userManager)
         {
-            _db = db;
             _signInManager = singInManager;
             _userManager = userManager;
             _jwtSettings = jwtSettings.Value;
@@ -47,8 +43,9 @@
             }
 
             CatifyUser user = await _userManager.FindByNameAsync(username);
+            IList<string> roles = await _userManager.GetRolesAsync(user);
 
-            return GetToken(user);
+            return await GetToken(user);
         }
 
         public async Task<string> Register(RegisterBindingModel model)
@@ -61,24 +58,46 @@
 
             IdentityResult result = await _userManager.CreateAsync(user, model.Password);
 
+            if (_signInManager.UserManager.Users.Count() == 1)
+            {
+                await _signInManager.UserManager.AddToRoleAsync(user, "Administrator");
+            }
+
             if (!result.Succeeded)
             {
                 return null;
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
+            IList<string> roles = await _userManager.GetRolesAsync(user);
 
-            return GetToken(user);
+            return await GetToken(user);
         }
 
-        private string GetToken(IdentityUser user)
+        public async Task Logout()
         {
+            await _signInManager.SignOutAsync();
+        }
+
+        private async Task<string> GetToken(CatifyUser user)
+        {
+            IList<string> roles = await _userManager.GetRolesAsync(user);
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Id),
+            };
+
+            foreach (string role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
             // Authentication successful so generate jwt token
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             byte[] key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
             SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.Id) }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
