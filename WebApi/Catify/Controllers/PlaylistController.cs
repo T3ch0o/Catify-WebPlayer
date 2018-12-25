@@ -27,6 +27,12 @@
         public IActionResult Get([FromRoute]string id)
         {
             Playlist playlist = _playlistService.Get(id);
+
+            if (playlist == null)
+            {
+                return BadRequest();
+            }
+
             List<SongModel> songs = new List<SongModel>();
 
             foreach (Song song in playlist.Songs)
@@ -71,11 +77,11 @@
             return Ok(playlistsModel);
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         [Authorize]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult Create([FromBody]PlaylistBindingModel model)
+        public IActionResult Post([FromBody]PlaylistBindingModel model)
         {
             if (ModelState.IsValid)
             {
@@ -108,13 +114,34 @@
             return BadRequest(ModelState);
         }
 
+        [HttpPut("update/{id}")]
+        [Authorize]
+        [ProducesDefaultResponseType]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult UpdateStatus([FromBody]PlaylistStatusBindingModel model, [FromRoute]string id)
+        {
+            if (ModelState.IsValid)
+            {
+                bool isUpdated = _playlistService.UpdateStatus(model, id, User.Identity.Name);
+
+                if (isUpdated)
+                {
+                    return Ok(new { StatusUpdate = true });
+                }
+
+                return BadRequest();
+            }
+
+            return BadRequest(ModelState);
+        }
+
         [HttpDelete("{id}")]
         [Authorize]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult Delete(string id)
+        public IActionResult Delete([FromRoute]string id)
         {
-            bool isDeleted = true;
+            bool isDeleted = _playlistService.Delete(id, User.Identity.Name);
 
             if (isDeleted)
             {
