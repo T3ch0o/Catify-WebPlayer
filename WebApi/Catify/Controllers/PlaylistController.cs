@@ -26,7 +26,26 @@
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult Get([FromRoute]string id)
         {
-            return Ok(id);
+            Playlist playlist = _playlistService.Get(id);
+            List<SongModel> songs = new List<SongModel>();
+
+            foreach (Song song in playlist.Songs)
+            {
+                songs.Add(new SongModel{ Title = song.Title, Url = song.Url });
+            }
+
+            PlaylistReturnModel playlistModel = new PlaylistReturnModel
+            {
+                Creator = playlist.Creator.UserName,
+                Title = playlist.Title,
+                ImageUrl = playlist.ImageUrl,
+                Likes = playlist.Likes,
+                Favorites = playlist.Favorites,
+                CreationDate = playlist.CreationDate,
+                Songs = songs
+            };
+
+            return Ok(playlistModel);
         }
 
         [HttpGet("all")]
@@ -40,7 +59,13 @@
 
             foreach (Playlist playlist in playlists)
             {
-                playlistsModel.Add(new AllPlaylistsModel { Creator = playlist.Creator.UserName, Title = playlist.Title, ImageUrl = playlist.ImageUrl });
+                playlistsModel.Add(new AllPlaylistsModel
+                {
+                    Creator = playlist.Creator.UserName,
+                    Title = playlist.Title,
+                    ImageUrl = playlist.ImageUrl,
+                    CreationDate = playlist.CreationDate
+                });
             }
 
             return Ok(playlistsModel);
@@ -50,19 +75,53 @@
         [Authorize]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult Create([FromBody]CreatePlaylistBindingModel model)
+        public IActionResult Create([FromBody]PlaylistBindingModel model)
         {
             if (ModelState.IsValid)
             {
                 _playlistService.Create(model, User.Identity.Name);
 
-                return Ok(new
-                {
-                    Created = true
-                });
+                return Ok(new { Created = true });
             }
 
             return BadRequest(ModelState);
+        }
+
+        [HttpPut("{id}")]
+        [Authorize]
+        [ProducesDefaultResponseType]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult Put([FromBody]PlaylistBindingModel model, [FromRoute] string id)
+        {
+            if (ModelState.IsValid)
+            {
+                bool isUpdated = _playlistService.Edit(model, id, User.Identity.Name);
+
+                if (isUpdated)
+                {
+                    return Ok(new { Edited = true });
+                }
+
+                return BadRequest();
+            }
+
+            return BadRequest(ModelState);
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        [ProducesDefaultResponseType]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult Delete(string id)
+        {
+            bool isDeleted = true;
+
+            if (isDeleted)
+            {
+                return Ok(new { Removed = true });
+            }
+
+            return BadRequest();
         }
     }
 }
