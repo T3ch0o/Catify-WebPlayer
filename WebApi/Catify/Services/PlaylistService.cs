@@ -17,18 +17,23 @@
 
         private readonly ISongService _songService;
 
-        public PlaylistService(CatifyDbContext db, ISongService songService)
+        private readonly IUserService _userService;
+
+        public PlaylistService(CatifyDbContext db, ISongService songService, IUserService userService)
         {
             _db = db;
             _songService = songService;
+            _userService = userService;
         }
 
         public Playlist Get(string id)
         {
-            return _db.Playlists
-                      .Include(p => p.Creator)
-                      .Include(p => p.Songs)
-                      .FirstOrDefault(p => p.Id == id);
+            Playlist playlist = _db.Playlists
+                                   .Include(p => p.Creator)
+                                   .Include(p => p.Songs)
+                                   .FirstOrDefault(p => p.Id == id);
+
+            return playlist;
         }
 
         public IEnumerable<Playlist> GetAll()
@@ -57,7 +62,7 @@
         {
             Playlist playlist = _db.Playlists.FirstOrDefault(p => p.Id == playlistId);
 
-            if (playlist == null || playlist.CreatorId == creatorId)
+            if (playlist == null || playlist.CreatorId != creatorId)
             {
                 return false;
             }
@@ -68,6 +73,70 @@
             _db.SaveChanges();
 
             return true;
+        }
+
+        public bool UpdateStatus(PlaylistStatusBindingModel model, string playlistId, string userId)
+        {
+            Playlist playlist = Get(playlistId);
+
+            if (playlist == null)
+            {
+                return false;
+            }
+
+            bool isAdded = playlist.Favorites + 1 == model.Favorites;
+            bool isRemoved = playlist.Favorites - 1 == model.Favorites;
+
+            if ((playlist.Likes + 1 == model.Likes || playlist.Likes - 1 == model.Likes) && playlist.Favorites == model.Favorites)
+            {
+                playlist.Likes = model.Likes;
+            }
+            else if ((isAdded || isRemoved) && playlist.Likes == model.Likes)
+            {
+                if (isAdded)
+                {
+                    _userService.AddPlaylistToFavorites(userId, playlistId);
+                }
+
+                if (isRemoved)
+                {
+                    _userService.RemovePlaylistFromFavorites(userId, playlistId);
+                }
+
+                playlist.Favorites = model.Favorites;
+            }
+            else
+            {
+                return false;
+            }
+
+            _db.SaveChanges();
+
+            return true;
+        }
+
+        public bool Delete(string playlistId, string creatorId)
+        {
+            Playlist playlist = _db.Playlists.FirstOrDefault(p => p.Id == playlistId);
+
+            if (playlist == null || playlist.CreatorId != creatorId)
+            {
+                return false;
+            }
+
+            _songService.DeleteAll(playlistId);
+
+            _db.Playlists.Remove(playlist);
+            _db.SaveChanges();
+
+            return true;
+        }
+
+        public IEnumerable<FavoritePlaylist> GetFavoritePlaylists(string userId)
+        {
+            IEnumerable<FavoritePlaylist> favoritePlaylists = _db.FavoritePlaylists.Where(fp => fp.UserId == userId);
+
+            return favoritePlaylists;
         }
     }
 }

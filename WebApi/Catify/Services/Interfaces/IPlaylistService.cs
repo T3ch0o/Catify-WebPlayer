@@ -14,5 +14,11 @@
         void Create(PlaylistBindingModel model, string creatorId);
 
         bool Edit(PlaylistBindingModel model, string playlistId, string creatorId);
+
+        bool UpdateStatus(PlaylistStatusBindingModel model, string playlistId, string userId);
+
+        bool Delete(string playlistId, string creatorId);
+
+        IEnumerable<FavoritePlaylist> GetFavoritePlaylists(string userId);
     }
 }
