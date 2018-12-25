@@ -11,5 +11,9 @@
         Task<string> Register(RegisterBindingModel model);
 
         Task Logout();
+
+        void AddPlaylistToFavorites(string userId,string playlistId);
+
+        void RemovePlaylistFromFavorites(string userId,string playlistId);
     }
 }

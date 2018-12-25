@@ -8,6 +8,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
+    using Catify.Data;
     using Catify.Entities;
     using Catify.Models.BindingModels;
     using Catify.Services.Interfaces;
@@ -24,12 +25,16 @@
 
         private readonly UserManager<CatifyUser> _userManager;
 
+        private readonly CatifyDbContext _db;
+
         public UserService(IOptions<JwtSettings> jwtSettings,
                            SignInManager<CatifyUser> singInManager,
-                           UserManager<CatifyUser> userManager)
+                           UserManager<CatifyUser> userManager,
+                           CatifyDbContext db)
         {
             _signInManager = singInManager;
             _userManager = userManager;
+            _db = db;
             _jwtSettings = jwtSettings.Value;
         }
 
@@ -75,6 +80,26 @@
         public async Task Logout()
         {
             await _signInManager.SignOutAsync();
+        }
+
+        public void AddPlaylistToFavorites(string userId, string playlistId)
+        {
+            FavoritePlaylist favoritePlaylist = new FavoritePlaylist
+            {
+                UserId = userId,
+                PlaylistId = playlistId
+            };
+
+            _db.FavoritePlaylists.Add(favoritePlaylist);
+            _db.SaveChanges();
+        }
+
+        public void RemovePlaylistFromFavorites(string userId, string playlistId)
+        {
+            FavoritePlaylist favoritePlaylist = _db.FavoritePlaylists.FirstOrDefault(fp => fp.UserId == userId && fp.PlaylistId == playlistId);
+
+            _db.FavoritePlaylists.Remove(favoritePlaylist);
+            _db.SaveChanges();
         }
 
         private async Task<string> GetToken(CatifyUser user)
