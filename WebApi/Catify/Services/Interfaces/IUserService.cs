@@ -2,8 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    using Catify.BindingModels;
-    using Catify.Entities;
+    using Catify.Models.BindingModels;
 
     public interface IUserService
     {
