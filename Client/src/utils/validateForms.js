@@ -198,7 +198,7 @@ const validationFunc = function(values) {
     const validTags = function() {
         const tags = values.tags;
         let tagsRegex = new RegExp(
-            /(?:\w+,)+/
+            /(?:\w+,)*\w+/
         );
         let className = '';
         let errorMessage = '';
