@@ -50,7 +50,6 @@
 
             IConfigurationSection jwtSettingsSection = Configuration.GetSection("JwtSettings");
             services.Configure<JwtSettings>(jwtSettingsSection);
-            services.AddScoped<IUserService, UserService>();
 
             // Configure JWT authentication
 
@@ -74,6 +73,8 @@
                     ValidateAudience = false
                 };
             });
+
+            services.AddScoped<IUserService, UserService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
