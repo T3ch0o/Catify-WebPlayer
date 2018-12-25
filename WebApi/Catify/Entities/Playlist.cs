@@ -12,6 +12,8 @@
 
         public int Likes { get; set; }
 
+        public int Favorites { get; set; }
+
         public DateTime CreationDate { get; set; }
 
         public string CreatorId { get; set; }
