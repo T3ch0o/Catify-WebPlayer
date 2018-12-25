@@ -11,16 +11,12 @@
 
         public string ImageUrl { get; set; }
 
-        public string SongUrl { get; set; }
-
-        public string SongTitle { get; set; }
-
         public int Likes { get; set; }
 
         public int Favorites { get; set; }
 
         public DateTime CreationDate { get; set; }
 
-        public ICollection<SongModel> Songs = new HashSet<SongModel>();
+        public ICollection<SongModel> Songs { get; set; }
     }
 }
