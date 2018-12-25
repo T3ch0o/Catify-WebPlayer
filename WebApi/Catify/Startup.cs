@@ -76,6 +76,7 @@
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IPlaylistService, PlaylistService>();
+            services.AddScoped<ISongService, SongService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
