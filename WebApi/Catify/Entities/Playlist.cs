@@ -1,5 +1,6 @@
 ﻿namespace Catify.Entities
 {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,6 +11,8 @@
         public string ImageUrl { get; set; }
 
         public int Likes { get; set; }
+
+        public DateTime CreationDate { get; set; }
 
         public string CreatorId { get; set; }
 
