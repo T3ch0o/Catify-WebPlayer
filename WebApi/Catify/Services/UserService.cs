@@ -43,7 +43,6 @@
             }
 
             CatifyUser user = await _userManager.FindByNameAsync(username);
-            IList<string> roles = await _userManager.GetRolesAsync(user);
 
             return await GetToken(user);
         }
@@ -69,7 +68,6 @@
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
-            IList<string> roles = await _userManager.GetRolesAsync(user);
 
             return await GetToken(user);
         }
