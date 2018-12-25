@@ -4,7 +4,7 @@ namespace Catify.Controllers
 {
     using System.Threading.Tasks;
 
-    using Catify.BindingModels;
+    using Catify.Models.BindingModels;
     using Catify.Services.Interfaces;
 
     using Microsoft.AspNetCore.Authorization;
@@ -47,7 +47,7 @@ namespace Catify.Controllers
         [AllowAnonymous]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Register([FromBody] RegisterBindingModel model)
+        public async Task<IActionResult> Register([FromBody]RegisterBindingModel model)
         {
             if (ModelState.IsValid)
             {
