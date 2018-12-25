@@ -8,8 +8,8 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    using Catify.BindingModels;
     using Catify.Entities;
+    using Catify.Models.BindingModels;
     using Catify.Services.Interfaces;
 
     using Microsoft.AspNetCore.Identity;
