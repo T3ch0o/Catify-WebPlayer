@@ -7,8 +7,12 @@
 
     public interface IPlaylistService
     {
+        Playlist Get(string id);
+
         IEnumerable<Playlist> GetAll();
 
-        void Create(CreatePlaylistBindingModel model, string creatorId);
+        void Create(PlaylistBindingModel model, string creatorId);
+
+        bool Edit(PlaylistBindingModel model, string playlistId, string creatorId);
     }
 }

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using Catify.Data;
     using Catify.Entities;
@@ -22,19 +23,26 @@
             _songService = songService;
         }
 
+        public Playlist Get(string id)
+        {
+            return _db.Playlists
+                      .Include(p => p.Creator)
+                      .Include(p => p.Songs)
+                      .FirstOrDefault(p => p.Id == id);
+        }
+
         public IEnumerable<Playlist> GetAll()
         {
             return _db.Playlists
                       .Include(playlist => playlist.Creator);
         }
 
-        public void Create(CreatePlaylistBindingModel model, string creatorId)
+        public void Create(PlaylistBindingModel model, string creatorId)
         {
             Playlist playlist = new Playlist
             {
                 Title = model.Title,
                 ImageUrl = model.ImageUrl,
-                Likes = 0,
                 CreationDate = DateTime.UtcNow,
                 CreatorId = creatorId
             };
@@ -43,6 +51,23 @@
             _db.SaveChanges();
 
             _songService.Create(model.SongTitle, model.SongUrl, playlist.Id);
+        }
+
+        public bool Edit(PlaylistBindingModel model, string playlistId, string creatorId)
+        {
+            Playlist playlist = _db.Playlists.FirstOrDefault(p => p.Id == playlistId);
+
+            if (playlist == null || playlist.CreatorId == creatorId)
+            {
+                return false;
+            }
+
+            playlist.Title = model.Title;
+            playlist.ImageUrl = model.ImageUrl;
+
+            _db.SaveChanges();
+
+            return true;
         }
     }
 }
