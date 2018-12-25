@@ -10,7 +10,7 @@ namespace Catify.Controllers
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
-    public class UserController : BaseController
+    public class UserController : BaseApiController
     {
         private IUserService _userService;
 
