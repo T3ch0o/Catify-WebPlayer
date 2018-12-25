@@ -5,5 +5,7 @@
     public interface ISongService
     {
         void Create(string title, string url, string playlistId);
+
+        void DeleteAll(string playlistId);
     }
 }
