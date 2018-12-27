@@ -102,6 +102,12 @@
             _db.SaveChanges();
         }
 
+        public IEnumerable<FavoritePlaylist> GetUserFavoritePlaylists(string userId)
+        {
+            return _db.FavoritePlaylists
+                      .Where(fp => fp.UserId == userId);
+        }
+
         private async Task<string> GetToken(CatifyUser user)
         {
             IList<string> roles = await _userManager.GetRolesAsync(user);

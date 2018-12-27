@@ -1,7 +1,9 @@
 ﻿namespace Catify.Services.Interfaces
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Catify.Entities;
     using Catify.Models.BindingModels;
 
     public interface IUserService
@@ -15,5 +17,7 @@
         void AddPlaylistToFavorites(string userId,string playlistId);
 
         void RemovePlaylistFromFavorites(string userId,string playlistId);
+
+        IEnumerable<FavoritePlaylist> GetUserFavoritePlaylists(string userId);
     }
 }
