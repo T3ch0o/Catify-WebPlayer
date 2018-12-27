@@ -4,13 +4,14 @@
     using System.Threading.Tasks;
 
     using Catify.Entities;
+    using Catify.Models;
     using Catify.Models.BindingModels;
 
     public interface IUserService
     {
-        Task<string> Authenticate(string username, string password);
+        Task<UserReturnModel> Authenticate(string username, string password);
 
-        Task<string> Register(RegisterBindingModel model);
+        Task<UserReturnModel> Register(RegisterBindingModel model);
 
         Task Logout();
 

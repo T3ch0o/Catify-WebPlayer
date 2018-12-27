@@ -10,6 +10,7 @@
 
     using Catify.Data;
     using Catify.Entities;
+    using Catify.Models;
     using Catify.Models.BindingModels;
     using Catify.Services.Interfaces;
 
@@ -38,7 +39,7 @@
             _jwtSettings = jwtSettings.Value;
         }
 
-        public async Task<string> Authenticate(string username, string password)
+        public async Task<UserReturnModel> Authenticate(string username, string password)
         {
             SignInResult loginResult = await _signInManager.PasswordSignInAsync(username, password, false, false);
 
@@ -49,10 +50,10 @@
 
             CatifyUser user = await _userManager.FindByNameAsync(username);
 
-            return await GetToken(user);
+            return await SetupUserModel(user);
         }
 
-        public async Task<string> Register(RegisterBindingModel model)
+        public async Task<UserReturnModel> Register(RegisterBindingModel model)
         {
             CatifyUser user = new CatifyUser
             {
@@ -74,7 +75,7 @@
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 
-            return await GetToken(user);
+            return await SetupUserModel(user);
         }
 
         public async Task Logout()
@@ -108,7 +109,7 @@
                       .Where(fp => fp.UserId == userId);
         }
 
-        private async Task<string> GetToken(CatifyUser user)
+        private async Task<UserReturnModel> SetupUserModel(CatifyUser user)
         {
             IList<string> roles = await _userManager.GetRolesAsync(user);
             List<Claim> claims = new List<Claim>
@@ -132,7 +133,12 @@
             };
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return tokenHandler.WriteToken(token);
+            return new UserReturnModel
+            {
+                Username = user.UserName,
+                Token = tokenHandler.WriteToken(token),
+                Role = roles.FirstOrDefault()
+            };
         }
     }
 }
