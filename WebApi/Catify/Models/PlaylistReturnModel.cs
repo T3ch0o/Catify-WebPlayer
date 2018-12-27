@@ -5,6 +5,8 @@
 
     public class PlaylistReturnModel
     {
+        public string Id { get; set; }
+
         public string Creator { get; set; }
 
         public string Title { get; set; }
