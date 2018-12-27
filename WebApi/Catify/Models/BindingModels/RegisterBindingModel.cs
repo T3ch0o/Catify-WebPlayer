@@ -17,9 +17,5 @@
         [Required]
         [Compare(nameof(Password), ErrorMessage = "Passwords doesn't match.")]
         public string RepeatPassword { get; set; }
-
-        public string Token { get; set; }
-
-        public string Role { get; set; }
     }
 }
