@@ -1,6 +1,7 @@
 ﻿namespace Catify.Controllers
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     using Catify.Entities;
     using Catify.Models;
@@ -15,9 +16,12 @@
     {
         private readonly IPlaylistService _playlistService;
 
-        public PlaylistController(IPlaylistService playlistService)
+        private readonly IUserService _userService;
+
+        public PlaylistController(IPlaylistService playlistService, IUserService userService)
         {
             _playlistService = playlistService;
+            _userService = userService;
         }
 
         [HttpGet("{id}")]
@@ -42,6 +46,7 @@
 
             PlaylistReturnModel playlistModel = new PlaylistReturnModel
             {
+                Id = playlist.Id,
                 Creator = playlist.Creator.UserName,
                 Title = playlist.Title,
                 ImageUrl = playlist.ImageUrl,
@@ -62,15 +67,20 @@
         {
             IEnumerable<Playlist> playlists = _playlistService.GetAll();
             List<AllPlaylistsModel> playlistsModel = new List<AllPlaylistsModel>();
+            IEnumerable<FavoritePlaylist> favoritePlaylists = _userService.GetUserFavoritePlaylists(User.Identity.Name);
 
             foreach (Playlist playlist in playlists)
             {
+                bool isFavorite = favoritePlaylists.Any(p => p.PlaylistId == playlist.Id);
+
                 playlistsModel.Add(new AllPlaylistsModel
                 {
+                    Id = playlist.Id,
                     Creator = playlist.Creator.UserName,
                     Title = playlist.Title,
                     ImageUrl = playlist.ImageUrl,
-                    CreationDate = playlist.CreationDate
+                    CreationDate = playlist.CreationDate,
+                    IsFavoritePlaylist = isFavorite
                 });
             }
 
