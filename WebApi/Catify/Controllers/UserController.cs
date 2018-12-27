@@ -4,6 +4,7 @@ namespace Catify.Controllers
 {
     using System.Threading.Tasks;
 
+    using Catify.Models;
     using Catify.Models.BindingModels;
     using Catify.Services.Interfaces;
 
@@ -27,17 +28,14 @@ namespace Catify.Controllers
         {
             if (ModelState.IsValid)
             {
-                string token = await _userService.Authenticate(model.Username, model.Password);
+                UserReturnModel userModel = await _userService.Authenticate(model.Username, model.Password);
 
-                if (token == null)
+                if (userModel == null)
                 {
                     return BadRequest(new { message = "Username or password is incorrect" });
                 }
 
-                model.Token = token;
-                model.Password = null;
-
-                return Ok(model);
+                return Ok(userModel);
             }
 
             return BadRequest(ModelState);
@@ -51,18 +49,14 @@ namespace Catify.Controllers
         {
             if (ModelState.IsValid)
             {
-                string token = await _userService.Register(model);
+                UserReturnModel userModel = await _userService.Register(model);
 
-                if (token == null)
+                if (userModel == null)
                 {
                     return BadRequest(new { message = "Username already exist." });
                 }
 
-                model.Token = token;
-                model.Password = null;
-                model.RepeatPassword = null;
-
-                return Ok(model);
+                return Ok(userModel);
             }
 
             return BadRequest(ModelState);
