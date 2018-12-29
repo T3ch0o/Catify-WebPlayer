@@ -75,5 +75,16 @@ namespace Catify.Controllers
                 User = ""
             });
         }
+
+        [HttpGet("me")]
+        [Authorize]
+        [ProducesDefaultResponseType]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Me()
+        {
+            UserProfileModel user = await _userService.Get(User.Identity.Name);
+
+            return Ok(user);
+        }
     }
 }
