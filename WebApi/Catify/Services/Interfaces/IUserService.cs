@@ -20,5 +20,7 @@
         void RemovePlaylistFromFavorites(string userId,string playlistId);
 
         IEnumerable<FavoritePlaylist> GetUserFavoritePlaylists(string userId);
+
+        Task<UserProfileModel> Get(string id);
     }
 }

@@ -109,6 +109,21 @@
                       .Where(fp => fp.UserId == userId);
         }
 
+        public async Task<UserProfileModel> Get(string id)
+        {
+            CatifyUser user = await _userManager.FindByIdAsync(id);
+            IList<string> roles = await _userManager.GetRolesAsync(user);
+            List<string> favoritePlaylists = GetUserFavoritePlaylists(id).Select(fp => fp.PlaylistId).ToList();
+
+            return new UserProfileModel
+            {
+                Username = user.UserName,
+                Email = user.Email,
+                FavoritePlaylists = favoritePlaylists,
+                Role = roles.Count() == 1 ? "Admin" : "User"
+            };
+        }
+
         private async Task<UserReturnModel> SetupUserModel(CatifyUser user)
         {
             IList<string> roles = await _userManager.GetRolesAsync(user);
