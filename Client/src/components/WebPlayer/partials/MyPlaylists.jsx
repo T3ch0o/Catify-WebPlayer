@@ -13,8 +13,8 @@ const MyPlaylists = function(props) {
         <ul>
             {myPlaylists.length !== 0 ? myPlaylists.map(p =>
                 <Playlist
-                    key={p._id}
-                    id={p._id}
+                    key={p.id}
+                    id={p.id}
                     image={p.imageUrl}
                     title={p.title}
                 />
