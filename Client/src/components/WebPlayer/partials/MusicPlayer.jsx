@@ -41,7 +41,7 @@ class MusicPlayer extends Component {
 
         this.checkSong(playlist, currentSong);
 
-        this.setState({ url: playlist[currentSong].songUrl, playable: true});
+        this.setState({ url: playlist[currentSong].url, playable: true});
     }
 
     checkSong(playlist, currentPlaying) {
