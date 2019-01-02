@@ -35,7 +35,7 @@ function reconcile(oldData, newData) {
         result.push(newDataById[id]);
     }
 
-    result.sort((a, b) => a._kmd.ect < b._kmd.ect);
+    result.sort((a, b) => a.creationDate < b.creationDate);
 
     return result;
 }
