@@ -35,10 +35,6 @@ class RegisterPage extends Component {
         const validData = Object.values(payload).includes('empty');
 
         if (isValid && !validData) {
-            payload.tags = [];
-            payload.favorites = [];
-            payload.role = "User";
-            delete payload.repeatPassword;
             this.props.register(payload)
                 .then(() => {
                     this.props.redirect();
