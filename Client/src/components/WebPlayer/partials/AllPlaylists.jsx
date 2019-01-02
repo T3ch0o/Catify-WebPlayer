@@ -9,8 +9,8 @@ const AllPlaylists = function(props) {
         <ul>
             {playlists.map(p =>
                 <Playlist
-                    key={p._id}
-                    id={p._id}
+                    key={p.id}
+                    id={p.id}
                     image={p.imageUrl}
                     title={p.title}
                 />
