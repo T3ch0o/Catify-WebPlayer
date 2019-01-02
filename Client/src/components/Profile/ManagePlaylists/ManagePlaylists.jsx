@@ -4,38 +4,19 @@ import { connect } from 'react-redux';
 
 import AddForm from '../partials/AddForm'
 
-import { requestPlaylistsAction, deletePlaylist } from '../../../actions/playlistActions';
+import { getPlaylistsAction, deletePlaylist } from '../../../actions/playlistActions';
 import MyPlaylists from '../partials/MyPlaylists';
-import {updateUserAction, userAction} from '../../../actions/authActions';
 
 class ManagePlaylists extends Component {
     componentDidMount() {
         this.props.getMyPlaylists();
     }
 
-    deletePlaylist(id, title) {
+    deletePlaylist(id) {
         this.props.deletePlaylist(id)
-            .then(res => {
-                this.props.getUser()
-                    .then(data => {
-                        const { favorites, roles, tags, email, _id } = data;
-
-                        if (favorites.includes(title)) {
-                            const index = favorites.indexOf(title);
-                            favorites.splice(index, 1)
-                        }
-
-                        const payload = {
-                            email,
-                            roles,
-                            favorites,
-                            tags
-                        };
-
-                        this.props.updateUser(payload, _id);
-                        this.props.getMyPlaylists();
-                    });
-            });
+            .then(() => {
+                this.props.getMyPlaylists();
+            })
     }
 
     render() {
@@ -66,10 +47,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getMyPlaylists: () => dispatch(requestPlaylistsAction()),
-        deletePlaylist: (id) => dispatch(deletePlaylist(id)),
-        getUser: () => dispatch(userAction()),
-        updateUser: (payload, id) => dispatch(updateUserAction(payload, id))
+        getMyPlaylists: () => dispatch(getPlaylistsAction()),
+        deletePlaylist: (id) => dispatch(deletePlaylist(id))
     }
 }
 
