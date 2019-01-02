@@ -107,7 +107,7 @@
         [Authorize]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult Put([FromBody]PlaylistBindingModel model, [FromRoute] string id)
+        public IActionResult Put([FromBody]EditPlaylistBindingModel model, [FromRoute]string id)
         {
             if (ModelState.IsValid)
             {
