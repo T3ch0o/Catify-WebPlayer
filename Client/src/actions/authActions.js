@@ -10,7 +10,7 @@ function success() {
 
 function saveToLocalStorage(response) {
     localStorage.setItem('user', response.username);
-    localStorage.setItem('authToken', response._kmd.authtoken);
+    localStorage.setItem('authToken', response.token);
     localStorage.setItem('role', response.role);
 }
 
@@ -25,6 +25,10 @@ export function registerAction(payload) {
         dispatch(beginAction());
         return user.register(payload)
             .then(response => {
+                if (response.message) {
+                    throw Error();
+                }
+
                 saveToLocalStorage(response);
                 dispatch(success());
             });
@@ -36,9 +40,13 @@ export function loginAction(payload) {
         dispatch(beginAction());
         return user.login(payload)
             .then(response => {
+                if (response.message) {
+                    throw Error();
+                }
+
                 saveToLocalStorage(response);
                 dispatch(success());
-            });
+            })
     };
 }
 
