@@ -7,6 +7,8 @@
     using Catify.Entities;
     using Catify.Services.Interfaces;
 
+    using Microsoft.EntityFrameworkCore;
+
     public class SongService : ISongService
     {
         private readonly CatifyDbContext _db;
@@ -18,15 +20,32 @@
 
         public void Create(string title, string url, string playlistId)
         {
-            Song song = new Song
+            if (_db.Playlists.Any(p => p.Id == playlistId ))
             {
-                Title = title,
-                Url = url,
-                PlaylistId = playlistId
-            };
+                Song song = new Song
+                {
+                    Title = title,
+                    Url = url,
+                    PlaylistId = playlistId
+                };
 
-            _db.Songs.Add(song);
-            _db.SaveChanges();
+                _db.Songs.Add(song);
+                _db.SaveChanges();
+            }
+        }
+
+        public void Delete(string playlistId, string creatorId)
+        {
+            if (_db.Playlists.Any(p => p.Id == playlistId))
+            {
+                Song song = _db.Songs.Include(s => s.Playlist).FirstOrDefault(s => s.PlaylistId == playlistId);
+
+                if (song.Playlist.CreatorId == creatorId)
+                {
+                    _db.Songs.Remove(song);
+                    _db.SaveChanges();
+                }
+            }
         }
 
         public void DeleteAll(string playlistId)
