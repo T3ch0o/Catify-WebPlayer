@@ -58,7 +58,7 @@
             _songService.Create(model.SongTitle, model.SongUrl, playlist.Id);
         }
 
-        public bool Edit(PlaylistBindingModel model, string playlistId, string creatorId)
+        public bool Edit(EditPlaylistBindingModel model, string playlistId, string creatorId)
         {
             Playlist playlist = _db.Playlists.FirstOrDefault(p => p.Id == playlistId);
 
@@ -126,6 +126,9 @@
 
             _songService.DeleteAll(playlistId);
 
+            IEnumerable<FavoritePlaylist> favoritePlaylists = _db.FavoritePlaylists.Where(fp => fp.PlaylistId == playlistId);
+
+            _db.FavoritePlaylists.RemoveRange(favoritePlaylists);
             _db.Playlists.Remove(playlist);
             _db.SaveChanges();
 
