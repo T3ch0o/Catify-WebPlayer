@@ -152,7 +152,7 @@
             {
                 Username = user.UserName,
                 Token = tokenHandler.WriteToken(token),
-                Role = roles.FirstOrDefault()
+                Role = roles.Count() == 1 ? "Admin" : "User"
             };
         }
     }
