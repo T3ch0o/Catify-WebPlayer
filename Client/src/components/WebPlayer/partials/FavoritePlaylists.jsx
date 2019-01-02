@@ -5,15 +5,14 @@ import Playlist from './Playlist';
 
 const FavoritePlaylists = function(props) {
     const { playlists } = props;
-    const user = localStorage.getItem('user');
-    const favoritePlaylists = playlists.filter(p => p.favorites.includes(user));
+    const favoritePlaylists = playlists.filter(p => p.isFavoritePlaylist);
 
     return (
         <ul>
             {favoritePlaylists.length !== 0 ? favoritePlaylists.map(p =>
                 <Playlist
-                    key={p._id}
-                    id={p._id}
+                    key={p.id}
+                    id={p.id}
                     image={p.imageUrl}
                     title={p.title}
                 />
