@@ -13,7 +13,7 @@ const Playlist = function(props) {
                     <div className="edit-playlist">
                         <Link to={`/profile/manage-playlists/create/${id}`}><i className="fa fa-plus" aria-hidden="true"/> </Link>
                         <Link to={`/profile/edit-playlist/${id}`}><i className="fa fa-pencil" aria-hidden="true"/> </Link>
-                        <button onClick={() => deletePlaylist(id, title)}><i className="fa fa-trash" aria-hidden="true"/> </button>
+                        <button onClick={() => deletePlaylist(id)}><i className="fa fa-trash" aria-hidden="true"/> </button>
                     </div>
                 </div>
                 <Link to={`/web-player/playlist/${id}?song=1`} className="playlist-info">{title}</Link>
