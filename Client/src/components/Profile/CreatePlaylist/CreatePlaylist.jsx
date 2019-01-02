@@ -45,12 +45,8 @@ class CreatePlaylist extends Component {
                         /<title>(.*?)<\/title>/
                     );
                     const songTitle = decode(regex.exec(html)[1].split('|')[0]);
-                    payload.tags = payload.tags.startsWith('none') || !payload.tags ? [] : payload.tags.split(',').filter(tag => tag !== '');
-                    payload.creator = localStorage.getItem('user');
-                    payload.songs = [{ songTitle, songUrl: payload.songUrl }];
-                    payload.likes = [];
-                    payload.favorites = [];
-                    delete payload.songUrl;
+                    payload.tags = payload.tags.startsWith('none') || !payload.tags ? '' : payload.tags;
+                    payload.songTitle = songTitle;
 
                     this.props.createPlaylist(payload)
                         .then(res => {
