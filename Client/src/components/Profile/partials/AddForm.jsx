@@ -5,8 +5,8 @@ import decode from 'unescape';
 import Input from '../../common/Input';
 import dataCollector from '../../../utils/dataCollector';
 import validationFunc from '../../../utils/validateForms';
-import { editPlaylistAction, getMusicTitleAction} from '../../../actions/playlistActions';
-import {errorAction} from '../../../actions/ajaxActions';
+import { addSongToPlaylistAction, getMusicTitleAction, getPlaylistAction } from '../../../actions/playlistActions';
+import { errorAction } from '../../../actions/ajaxActions';
 
 class AddForm extends Component {
     constructor(props) {
@@ -34,21 +34,29 @@ class AddForm extends Component {
                         /<title>(.*?)<\/title>/
                     );
                     const songTitle = decode(regex.exec(html)[1].split('|')[0]);
-                    const payload = Object.assign({}, this.props.playlists.find(p => p._id === id));
                     let isTrue = true;
+                    this.props.getPlaylist(id)
+                        .then(() => {
+                            console.log(this.props.playlist);
 
-                    for (const currentSong of payload.songs) {
-                        if (currentSong.songTitle === songTitle) {
-                            isTrue = false;
-                        }
-                    }
+                            for (const currentSong of this.props.playlist.songs) {
+                                if (currentSong.title === songTitle) {
+                                    isTrue = false;
+                                }
+                            }
 
-                    if (isTrue) {
-                        payload.songs.push({songTitle, songUrl});
-                        this.props.addSong(payload, id);
-                    } else {
-                        this.props.ajaxError();
-                    }
+                            if (isTrue) {
+                                let payload = {
+                                    title: songTitle,
+                                    url: songUrl
+                                };
+
+                                this.props.addSong(payload, id);
+                            } else {
+                                this.props.ajaxError();
+                            }
+                        })
+
                 });
         }
     }
@@ -56,7 +64,6 @@ class AddForm extends Component {
     render() {
         const validation = validationFunc(this.state);
         const { begin, error } = this.props;
-        console.log(this.props);
 
         return (
             <div className="add-container">
@@ -96,13 +103,15 @@ class AddForm extends Component {
 function mapStateToProps(state) {
     return {
         begin: state.ajax.begin,
-        error: state.ajax.error
+        error: state.ajax.error,
+        playlist: state.playlist
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        addSong: (payload, id) => dispatch(editPlaylistAction(payload, id)),
+        addSong: (payload, id) => dispatch(addSongToPlaylistAction(payload, id)),
+        getPlaylist: (id) => dispatch(getPlaylistAction(id)),
         getMusicTitle: (link) => dispatch(getMusicTitleAction(link)),
         ajaxError: () => dispatch(errorAction()),
     }
