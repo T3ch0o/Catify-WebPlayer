@@ -77,6 +77,8 @@
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IPlaylistService, PlaylistService>();
             services.AddScoped<ISongService, SongService>();
+
+            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials()));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -92,6 +94,7 @@
 
             app.UseSeedDataMiddleware();
             app.UseAuthentication();
+            app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
             app.UseMvc();
