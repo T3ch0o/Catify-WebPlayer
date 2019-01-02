@@ -13,7 +13,7 @@
 
         void Create(PlaylistBindingModel model, string creatorId);
 
-        bool Edit(PlaylistBindingModel model, string playlistId, string creatorId);
+        bool Edit(EditPlaylistBindingModel model, string playlistId, string creatorId);
 
         bool UpdateStatus(PlaylistStatusBindingModel model, string playlistId, string userId);
 
