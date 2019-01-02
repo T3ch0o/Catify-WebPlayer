@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import AllPlaylists from '../partials/AllPlaylists';
-import { requestPlaylistsAction } from '../../../actions/playlistActions';
+import { getPlaylistsAction } from '../../../actions/playlistActions';
 
 class Playlists extends Component {
     componentDidMount() {
@@ -31,7 +31,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getPlaylists: () => dispatch(requestPlaylistsAction())
+        getPlaylists: () => dispatch(getPlaylistsAction())
     }
 }
 
