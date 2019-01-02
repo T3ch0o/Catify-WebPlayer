@@ -22,14 +22,14 @@ class EditPlaylist extends Component {
 
     componentWillMount() {
         const id = this.props.match.params.id;
-        const currentPlaylist = Object.assign({}, this.props.playlists.find(p => p._id === id));
+        const currentPlaylist = Object.assign({}, this.props.playlists.find(p => p.id === id));
 
-        if (!currentPlaylist.hasOwnProperty('_id')) {
+        if (!currentPlaylist.hasOwnProperty('id')) {
             this.props.history.push('/profile/manage-playlists');
             return;
         }
 
-        const {title, imageUrl, tags} = Object.assign({}, this.props.playlists.find(p => p._id === id));
+        const {title, imageUrl, tags} = Object.assign({}, this.props.playlists.find(p => p.id === id));
 
         this.setState({title, imageUrl, tags});
     }
@@ -42,11 +42,9 @@ class EditPlaylist extends Component {
 
         if (isValid) {
             const id = this.props.match.params.id;
-            const tags = payload.tags.join(',');
-            const currentPlaylist = Object.assign({}, this.props.playlists.find(p => p._id === id));
+            const currentPlaylist = Object.assign({}, this.props.playlists.find(p => p.id === id));
             currentPlaylist.title = payload.title;
             currentPlaylist.imageUrl = payload.imageUrl;
-            currentPlaylist.tags = !tags ? [] : tags.split(',').filter(tag => tag !== '');
 
             this.props.editPlaylist(currentPlaylist, id)
                 .then(() => this.props.history.push('/profile/manage-playlists'));
