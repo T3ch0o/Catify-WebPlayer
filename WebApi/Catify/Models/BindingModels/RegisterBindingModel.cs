@@ -8,7 +8,9 @@
         [MinLength(3, ErrorMessage = "Username is too short.")]
         public string Username { get; set; }
 
-        [Required] [EmailAddress] public string Email { get; set; }
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
 
         [Required]
         [MinLength(3, ErrorMessage = "Password is too short.")]
