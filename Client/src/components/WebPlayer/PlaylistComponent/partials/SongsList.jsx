@@ -14,7 +14,7 @@ const SongsList = function(props) {
                     id={id}
                     creator={creator}
                     songId={songId}
-                    songName={s.songTitle}
+                    songName={s.title}
                     deleteSong={deleteSong}
                 />
             ) : ''}
