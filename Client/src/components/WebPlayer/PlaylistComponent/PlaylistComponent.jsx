@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import Fade from 'react-reveal/Fade';
 import querystring from 'query-string';
 
-import { requestPlaylistAction, updatePlaylistAction, editPlaylistAction } from '../../../actions/playlistActions';
-import { updateUserAction, userAction } from '../../../actions/authActions';
+import { getPlaylistAction, removeSongFromPlaylistAction } from '../../../actions/playlistActions';
 import SongsList from './partials/SongsList';
 import formatData from "../../../utils/formatData";
 
@@ -33,13 +32,11 @@ class PlaylistComponent extends Component {
         const query = querystring.parse(nextProp.location.search);
         this.props.playlist.song = query.song - 1;
         if (localStorage.getItem('user')) {
-            const user = localStorage.getItem('user');
+            // if (nextProp.playlist.likes.includes(user)) {
+            //    this.setState({liked: true});
+            // }
 
-            if (nextProp.playlist.likes.includes(user)) {
-                this.setState({liked: true});
-            }
-
-            if (nextProp.playlist.favorites.includes(user)) {
+            if (nextProp.playlist.isFavoritePlaylist) {
                 this.setState({favorite: true});
             }
         }
@@ -59,19 +56,15 @@ class PlaylistComponent extends Component {
         format();
     }
 
-    deleteSong(songName) {
-        const payload = this.props.playlist;
+    deleteSong() {
         const id = this.props.match.params.id;
-        if (payload.creator === localStorage.getItem('user') || localStorage.getItem('role') === 'Admin') {
-            const index = payload.songs.findIndex(song => song.songTitle === songName);
-            payload.songs.splice(index, 1);
-            this.props.editPlaylist(payload, payload._id)
-                .then(() => this.props.getPlaylist(id));
-        }
+
+        this.props.removeSong(id)
+            .then(() => this.props.getPlaylist(id));
     }
 
     render() {
-        const { _id ,songs, title, imageUrl, creator, likes, favorites } = this.props.playlist;
+        const { id ,songs, title, imageUrl, creator, likes, favorites } = this.props.playlist;
         return (
             <div className="playlist-playing">
                 <section className="playlist-view">
@@ -91,7 +84,7 @@ class PlaylistComponent extends Component {
                             </div>
                         </div>
                     </Fade>
-                    <SongsList songs={songs} id={_id} songId={this.props.playlist.song} creator={creator} deleteSong={this.deleteSong}/>
+                    <SongsList songs={songs} id={id} songId={this.props.playlist.song} creator={creator} deleteSong={this.deleteSong}/>
                 </section>
 
             </div>
@@ -107,11 +100,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getPlaylist: (id) => dispatch(requestPlaylistAction(id)),
-        updatePlaylist: (payload, id) => dispatch(updatePlaylistAction(payload, id)),
-        editPlaylist: (payload, id) => dispatch(editPlaylistAction(payload, id)),
-        getUser: () => dispatch(userAction()),
-        updateUser: (payload, id) => dispatch(updateUserAction(payload, id))
+        getPlaylist: (id) => dispatch(getPlaylistAction(id)),
+        removeSong: (id) => dispatch(removeSongFromPlaylistAction(id))
     }
 }
 
