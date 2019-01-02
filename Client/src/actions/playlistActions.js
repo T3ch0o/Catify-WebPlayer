@@ -2,26 +2,26 @@ import { REQUEST_PLAYLISTS, REQUEST_PLAYLIST } from './actionTypes';
 import playlist from "../api/PlaylistAPI";
 import { errorAction, successAction, beginAction } from './ajaxActions';
 
-function requestPlaylists(data) {
+function getPlaylists(data) {
     return {
         type: REQUEST_PLAYLISTS,
         data
     }
 }
 
-function requestPlaylist(data) {
+function getPlaylist(data) {
     return {
         type: REQUEST_PLAYLIST,
         data
     }
 }
 
-export function requestPlaylistsAction() {
+export function getPlaylistsAction() {
     return function(dispatch) {
         dispatch(beginAction());
         playlist.getAll()
             .then(data => {
-                dispatch(requestPlaylists(data));
+                dispatch(getPlaylists(data));
                 dispatch(successAction());
             })
             .catch(error => dispatch(errorAction()));
@@ -74,14 +74,34 @@ export function deletePlaylist(id) {
     }
 }
 
-export function requestPlaylistAction(id) {
+export function getPlaylistAction(id) {
     return function(dispatch) {
         dispatch(beginAction());
         return playlist.get(id)
             .then(data => {
-                dispatch(requestPlaylist(data));
+                dispatch(getPlaylist(data));
                 dispatch(successAction());
             })
             .catch(error => dispatch(errorAction()));
+    }
+}
+
+export function addSongToPlaylistAction(payload, id) {
+    return function(dispatch) {
+        dispatch(beginAction());
+        return playlist.addSong(payload, id)
+            .then(data => {
+                dispatch(successAction());
+            });
+    }
+}
+
+export function removeSongFromPlaylistAction(id) {
+    return function(dispatch) {
+        dispatch(beginAction());
+        return playlist.removeSong(id)
+            .then(data => {
+                dispatch(successAction());
+            });
     }
 }
