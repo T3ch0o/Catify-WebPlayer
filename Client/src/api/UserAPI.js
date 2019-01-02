@@ -2,10 +2,9 @@ import { appKey, appSecret } from '../utils/API';
 
 const user = {
     login: function(payload) {
-        return fetch(`https://baas.kinvey.com/user/${appKey}/login`, {
+        return fetch(`https://localhost:44336/api/user/login`, {
             method: 'POST',
             headers: {
-                Authorization: `Basic ${btoa(`${appKey}:${appSecret}`)}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(payload)
@@ -13,10 +12,9 @@ const user = {
             .then(res => res.json());
     },
     register: function(payload) {
-        return fetch(`https://baas.kinvey.com/user/${appKey}`, {
+        return fetch(`https://localhost:44336/api/user/register`, {
             method: 'POST',
             headers: {
-                Authorization: `Basic ${btoa(`${appKey}:${appSecret}`)}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(payload)
@@ -24,19 +22,19 @@ const user = {
             .then(res => res.json());
     },
     logout: function() {
-        return fetch(`https://baas.kinvey.com/user/${appKey}/_logout`, {
-            method: 'POST',
+        return fetch(`https://localhost:44336/api/user/logout`, {
+            method: 'GEt',
             headers: {
-                Authorization: `Kinvey ${localStorage.getItem('authToken')}`,
+                Authorization: `Bearer ${localStorage.getItem('authToken')}`,
                 'Content-Type': 'application/json'
             }
         });
     },
     get: function() {
-        return fetch(`https://baas.kinvey.com/user/${appKey}/_me`, {
+        return fetch(`https://localhost:44336/api/user/me`, {
             method: 'GET',
             headers: {
-                Authorization: `Kinvey ${localStorage.getItem('authToken')}`
+                Authorization: `Bearer ${localStorage.getItem('authToken')}`
             }
         })
             .then(res => res.json());
