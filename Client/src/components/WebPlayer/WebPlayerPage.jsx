@@ -12,7 +12,7 @@ class WebPlayerPage extends Component {
 
         this.state = {
             songs: [{
-                songUrl: ""
+                url: ""
             }]
         };
     }
@@ -31,8 +31,6 @@ class WebPlayerPage extends Component {
         if (query.song) {
             this.props.playlist.song = query.song - 1;
         }
-
-        console.log(this.props.playlist.song);
 
         if (this.props.playlist.hasOwnProperty("songs")) {
             let { songs } = this.props.playlist;
