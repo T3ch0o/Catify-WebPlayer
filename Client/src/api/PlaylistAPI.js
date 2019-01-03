@@ -1,10 +1,9 @@
-import { appKey } from '../utils/API';
-
 const playlist = {
     get: function(id) {
         return fetch(`https://localhost:44336/api/playlist/${id}`, {
             method: 'GET',
             headers: {
+                Authorization: `Bearer ${localStorage.getItem('authToken')}`,
                 'Content-Type': 'application/json'
             }
         })
