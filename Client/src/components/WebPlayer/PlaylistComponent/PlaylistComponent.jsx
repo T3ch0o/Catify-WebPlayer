@@ -3,7 +3,11 @@ import { connect } from 'react-redux';
 import Fade from 'react-reveal/Fade';
 import querystring from 'query-string';
 
-import { getPlaylistAction, removeSongFromPlaylistAction } from '../../../actions/playlistActions';
+import {
+    getPlaylistAction,
+    removeSongFromPlaylistAction,
+    updatePlaylistStatusAction
+} from '../../../actions/playlistActions';
 import SongsList from './partials/SongsList';
 import formatData from "../../../utils/formatData";
 
@@ -19,27 +23,17 @@ class PlaylistComponent extends Component {
         this.like = this.like.bind(this);
         this.addToFavorites = this.addToFavorites.bind(this);
         this.deleteSong = this.deleteSong.bind(this);
+        this.choseSong = this.choseSong.bind(this);
     }
 
     componentDidMount() {
         const id = this.props.match.params.id;
         const query = querystring.parse(this.props.location.search);
         this.props.playlist.song = query.song - 1;
-        this.props.getPlaylist(id);
-    }
-
-    componentWillReceiveProps(nextProp) {
-        const query = querystring.parse(nextProp.location.search);
-        this.props.playlist.song = query.song - 1;
-        if (localStorage.getItem('user')) {
-            // if (nextProp.playlist.likes.includes(user)) {
-            //    this.setState({liked: true});
-            // }
-
-            if (nextProp.playlist.isFavoritePlaylist) {
-                this.setState({favorite: true});
-            }
-        }
+        this.props.getPlaylist(id)
+            .then(() => {
+                this.setState({liked: this.props.playlist.isLiked, favorite: this.props.playlist.isFavorite})
+            });
     }
 
     like() {
@@ -54,6 +48,11 @@ class PlaylistComponent extends Component {
         this.currentState = 'favorite';
         const format = formatData.bind(this);
         format();
+    }
+
+    choseSong() {
+        const query = querystring.parse(this.props.location.search);
+        this.props.playlist.song = query.song - 1;
     }
 
     deleteSong() {
@@ -73,7 +72,7 @@ class PlaylistComponent extends Component {
                             <img className="player-img" src={imageUrl} alt=""/>
                             <p className="playlist-title">{title}</p>
                             <p className="playlist-creator">{creator}</p>
-                            <p className="playlist-information">{songs ? songs.length : 0} songs - {likes ? likes.length : 0} likes - {favorites ? favorites.length : 0} favorites</p>
+                            <p className="playlist-information">{songs ? songs.length : 0} songs - {likes} likes - {favorites} favorites</p>
                             <div className="playlist-buttons">
                                 {localStorage.getItem('user') &&
                                 <div>
@@ -84,7 +83,7 @@ class PlaylistComponent extends Component {
                             </div>
                         </div>
                     </Fade>
-                    <SongsList songs={songs} id={id} songId={this.props.playlist.song} creator={creator} deleteSong={this.deleteSong}/>
+                    <SongsList songs={songs} id={id} songId={this.props.playlist.song} creator={creator} choseSong={this.choseSong} deleteSong={this.deleteSong}/>
                 </section>
 
             </div>
@@ -101,6 +100,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         getPlaylist: (id) => dispatch(getPlaylistAction(id)),
+        updatePlaylistStatus: (payload, id) => dispatch(updatePlaylistStatusAction(payload, id)),
         removeSong: (id) => dispatch(removeSongFromPlaylistAction(id))
     }
 }
