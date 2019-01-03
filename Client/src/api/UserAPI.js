@@ -1,5 +1,3 @@
-import { appKey, appSecret } from '../utils/API';
-
 const user = {
     login: function(payload) {
         return fetch(`https://localhost:44336/api/user/login`, {
@@ -36,17 +34,6 @@ const user = {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('authToken')}`
             }
-        })
-            .then(res => res.json());
-    },
-    update: function(payload, id) {
-        return fetch(`https://baas.kinvey.com/user/${appKey}/${id}`, {
-            method: 'PUT',
-            headers: {
-                Authorization: `Kinvey ${localStorage.getItem('authToken')}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
         })
             .then(res => res.json());
     }
