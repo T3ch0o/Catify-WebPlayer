@@ -15,11 +15,11 @@
 
         Task Logout();
 
-        void AddPlaylistToFavorites(string userId,string playlistId);
+        void CreateUserPlaylistStatus(string userId, string playlistId);
 
-        void RemovePlaylistFromFavorites(string userId,string playlistId);
+        void UpdateUserPlaylistStatus(string userId, string playlistId, string modifier, bool isAdded);
 
-        IEnumerable<FavoritePlaylist> GetUserFavoritePlaylists(string userId);
+        IEnumerable<UsersPlaylistStatus> GetUserFavoritePlaylists(string userId);
 
         Task<UserProfileModel> Get(string id);
     }
