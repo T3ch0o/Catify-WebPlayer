@@ -4,9 +4,9 @@
 
     public interface ISongService
     {
-        void Create(string title, string url, string playlistId);
+        bool Create(string title, string url, string creatorId, string playlistId, string role);
 
-        void Delete(string playlistId, string creatorId);
+        bool Delete(string playlistId, string creatorId, string role);
 
         void DeleteAll(string playlistId);
     }

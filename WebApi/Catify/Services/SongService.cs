@@ -18,9 +18,11 @@
             _db = db;
         }
 
-        public void Create(string title, string url, string playlistId)
+        public bool Create(string title, string url, string creatorId, string playlistId, string role = "User")
         {
-            if (_db.Playlists.Any(p => p.Id == playlistId ))
+            Playlist playlist = _db.Playlists.FirstOrDefault(p => p.Id == playlistId);
+
+            if (playlist != null && (playlist.CreatorId == creatorId || role == "Administrator"))
             {
                 Song song = new Song
                 {
@@ -31,21 +33,29 @@
 
                 _db.Songs.Add(song);
                 _db.SaveChanges();
+
+                return true;
             }
+
+            return false;
         }
 
-        public void Delete(string playlistId, string creatorId)
+        public bool Delete(string playlistId, string creatorId, string role)
         {
             if (_db.Playlists.Any(p => p.Id == playlistId))
             {
                 Song song = _db.Songs.Include(s => s.Playlist).FirstOrDefault(s => s.PlaylistId == playlistId);
 
-                if (song.Playlist.CreatorId == creatorId)
+                if (song != null && (song.Playlist.CreatorId == creatorId || role == "Administrator"))
                 {
                     _db.Songs.Remove(song);
                     _db.SaveChanges();
                 }
+
+                return true;
             }
+
+            return false;
         }
 
         public void DeleteAll(string playlistId)
