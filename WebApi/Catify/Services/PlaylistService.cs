@@ -84,24 +84,25 @@
                 return false;
             }
 
-            bool isAdded = playlist.Favorites + 1 == model.Favorites;
-            bool isRemoved = playlist.Favorites - 1 == model.Favorites;
+            bool isAddLike = playlist.Likes + 1 == model.Likes;
+            bool isRemoveLike = playlist.Likes - 1 == model.Likes;
+            bool isAddFavorite = playlist.Favorites + 1 == model.Favorites;
+            bool isRemoveFavorite = playlist.Favorites - 1 == model.Favorites;
 
-            if ((playlist.Likes + 1 == model.Likes || playlist.Likes - 1 == model.Likes) && playlist.Favorites == model.Favorites)
+            if (!_db.UsersPlaylistStatuses.Any(ps => ps.PlaylistId == playlistId && ps.UserId == userId))
             {
+                _userService.CreateUserPlaylistStatus(userId, playlistId);
+            }
+
+            if ((isAddLike || isRemoveLike) && playlist.Favorites == model.Favorites)
+            {
+                _userService.UpdateUserPlaylistStatus(userId, playlistId, "like", isAddLike);
+
                 playlist.Likes = model.Likes;
             }
-            else if ((isAdded || isRemoved) && playlist.Likes == model.Likes)
+            else if ((isAddFavorite || isRemoveFavorite) && playlist.Likes == model.Likes)
             {
-                if (isAdded)
-                {
-                    _userService.AddPlaylistToFavorites(userId, playlistId);
-                }
-
-                if (isRemoved)
-                {
-                    _userService.RemovePlaylistFromFavorites(userId, playlistId);
-                }
+                _userService.UpdateUserPlaylistStatus(userId, playlistId, "favorite", isAddFavorite);
 
                 playlist.Favorites = model.Favorites;
             }
@@ -126,18 +127,18 @@
 
             _songService.DeleteAll(playlistId);
 
-            IEnumerable<FavoritePlaylist> favoritePlaylists = _db.FavoritePlaylists.Where(fp => fp.PlaylistId == playlistId);
+            IEnumerable<UsersPlaylistStatus> favoritePlaylists = _db.UsersPlaylistStatuses.Where(fp => fp.PlaylistId == playlistId);
 
-            _db.FavoritePlaylists.RemoveRange(favoritePlaylists);
+            _db.UsersPlaylistStatuses.RemoveRange(favoritePlaylists);
             _db.Playlists.Remove(playlist);
             _db.SaveChanges();
 
             return true;
         }
 
-        public IEnumerable<FavoritePlaylist> GetFavoritePlaylists(string userId)
+        public IEnumerable<UsersPlaylistStatus> GetFavoritePlaylists(string userId)
         {
-            IEnumerable<FavoritePlaylist> favoritePlaylists = _db.FavoritePlaylists.Where(fp => fp.UserId == userId);
+            IEnumerable<UsersPlaylistStatus> favoritePlaylists = _db.UsersPlaylistStatuses.Where(fp => fp.UserId == userId);
 
             return favoritePlaylists;
         }
