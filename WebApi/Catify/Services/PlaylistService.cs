@@ -55,24 +55,29 @@
             _db.Add(playlist);
             _db.SaveChanges();
 
-            _songService.Create(model.SongTitle, model.SongUrl, playlist.Id);
+            _songService.Create(model.SongTitle, model.SongUrl, creatorId, playlist.Id, null);
         }
 
-        public bool Edit(EditPlaylistBindingModel model, string playlistId, string creatorId)
+        public bool Edit(EditPlaylistBindingModel model, string playlistId, string creatorId, string role)
         {
             Playlist playlist = _db.Playlists.FirstOrDefault(p => p.Id == playlistId);
 
-            if (playlist == null || playlist.CreatorId != creatorId)
+            if (playlist == null)
             {
                 return false;
             }
 
-            playlist.Title = model.Title;
-            playlist.ImageUrl = model.ImageUrl;
+            if (playlist.CreatorId == creatorId || role == "Administrator")
+            {
+                playlist.Title = model.Title;
+                playlist.ImageUrl = model.ImageUrl;
 
-            _db.SaveChanges();
+                _db.SaveChanges();
 
-            return true;
+                return true;
+            }
+
+            return false;
         }
 
         public bool UpdateStatus(PlaylistStatusBindingModel model, string playlistId, string userId)
@@ -116,24 +121,29 @@
             return true;
         }
 
-        public bool Delete(string playlistId, string creatorId)
+        public bool Delete(string playlistId, string creatorId, string role)
         {
             Playlist playlist = _db.Playlists.FirstOrDefault(p => p.Id == playlistId);
 
-            if (playlist == null || playlist.CreatorId != creatorId)
+            if (playlist == null)
             {
                 return false;
             }
 
-            _songService.DeleteAll(playlistId);
+            if (playlist.CreatorId == creatorId || role == "Administrator")
+            {
+                _songService.DeleteAll(playlistId);
 
-            IEnumerable<UsersPlaylistStatus> favoritePlaylists = _db.UsersPlaylistStatuses.Where(fp => fp.PlaylistId == playlistId);
+                IEnumerable<UsersPlaylistStatus> favoritePlaylists = _db.UsersPlaylistStatuses.Where(fp => fp.PlaylistId == playlistId);
 
-            _db.UsersPlaylistStatuses.RemoveRange(favoritePlaylists);
-            _db.Playlists.Remove(playlist);
-            _db.SaveChanges();
+                _db.UsersPlaylistStatuses.RemoveRange(favoritePlaylists);
+                _db.Playlists.Remove(playlist);
+                _db.SaveChanges();
 
-            return true;
+                return true;
+            }
+
+            return false;
         }
 
         public IEnumerable<UsersPlaylistStatus> GetFavoritePlaylists(string userId)
