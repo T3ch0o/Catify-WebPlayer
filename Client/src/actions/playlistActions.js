@@ -55,7 +55,7 @@ export function editPlaylistAction(payload, id) {
     }
 }
 
-export function updatePlaylistAction(payload, id) {
+export function updatePlaylistStatusAction(payload, id) {
     return function(dispatch) {
         dispatch(beginAction());
         return playlist.update(payload, id)
