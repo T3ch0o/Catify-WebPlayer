@@ -1,5 +1,8 @@
 ﻿namespace Catify.Controllers
 {
+    using System.Linq;
+    using System.Security.Claims;
+
     using Catify.Models.BindingModels;
     using Catify.Services.Interfaces;
 
@@ -24,9 +27,17 @@
         {
             if (ModelState.IsValid)
             {
-                _songService.Create(model.Title, model.Url, id);
+                string role = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).Any() ? "Administrator" : "User";
+                string creatorId = User.Identity.Name;
 
-                return Ok(new { Created = true });
+                bool isAdded = _songService.Create(model.Title, model.Url, creatorId, id, role);
+
+                if (isAdded)
+                {
+                    return Ok(new { Created = true });
+                }
+
+                return BadRequest();
             }
 
             return BadRequest(ModelState);
@@ -40,9 +51,17 @@
         {
             if (ModelState.IsValid)
             {
-                _songService.Delete(id, User.Identity.Name);
+                string role = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).Any() ? "Administrator" : "User";
+                string creatorId = User.Identity.Name;
 
-                return Ok(new { Deleted = true });
+                bool isDeleted = _songService.Delete(id, creatorId, role);
+
+                if (isDeleted)
+                {
+                    return Ok(new { Deleted = true });
+                }
+
+                return BadRequest();
             }
 
             return BadRequest(ModelState);
