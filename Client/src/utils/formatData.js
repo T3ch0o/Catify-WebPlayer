@@ -1,36 +1,26 @@
 export default function() {
-    this.props.getUser()
-        .then(data => {
-            const playlistPayload = this.props.playlist;
-            const { favorites, roles, tags, email, _id } = data;
-            const type = this.type;
-            const id = playlistPayload._id;
-            const user = data.username;
-            let currentType = playlistPayload[type];
+    const id = this.props.playlist.id;
+    const type = this.type;
+    const payload = {
+        likes: this.props.playlist['likes'],
+        favorites: this.props.playlist['favorites'],
+    };
 
-            if (currentType.includes(user)) {
-                const indexOfUser = currentType.indexOf(user);
-                const indexOfPlaylist = favorites.indexOf(playlistPayload.title);
-                favorites.splice(indexOfPlaylist, 1);
-                currentType.splice(indexOfUser, 1);
-                this.setState({[this.currentState]: false});
-            } else {
-                favorites.push(playlistPayload.title);
-                currentType.push(user);
-                this.setState({[this.currentState]: true});
-            }
+    if (!this.state.liked && type !== 'favorites') {
+        payload[type] += 1;
+        this.setState({[this.currentState]: true});
+    }
+    else if (!this.state.favorite && type !== 'likes') {
+        payload[type] += 1;
+        this.setState({[this.currentState]: true});
+    }
+    else {
+        payload[type] -= 1;
+        this.setState({[this.currentState]: false});
+    }
 
-            playlistPayload[type] = currentType;
-            const userPayload = {
-                email,
-                roles,
-                favorites,
-                tags
-            };
-            this.props.updatePlaylist(playlistPayload, id);
-            if (type === 'favorites') {
-                this.props.updateUser(userPayload, _id);
-            }
-        })
-        .catch(error => error);
+    this.props.updatePlaylistStatus(payload, id)
+        .then(() => {
+            this.props.getPlaylist(id)
+        });
 }
