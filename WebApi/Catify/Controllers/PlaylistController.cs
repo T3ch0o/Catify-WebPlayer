@@ -67,11 +67,11 @@
         {
             IEnumerable<Playlist> playlists = _playlistService.GetAll();
             List<AllPlaylistsModel> playlistsModel = new List<AllPlaylistsModel>();
-            IEnumerable<FavoritePlaylist> favoritePlaylists = _userService.GetUserFavoritePlaylists(User.Identity.Name);
+            IEnumerable<UsersPlaylistStatus> favoritePlaylists = _userService.GetUserFavoritePlaylists(User.Identity.Name);
 
             foreach (Playlist playlist in playlists)
             {
-                bool isFavorite = favoritePlaylists.Any(p => p.PlaylistId == playlist.Id);
+                bool isFavorite = favoritePlaylists.Any(p => p.PlaylistId == playlist.Id && p.IsFavorite);
 
                 playlistsModel.Add(new AllPlaylistsModel
                 {
