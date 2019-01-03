@@ -19,6 +19,6 @@
 
         bool Delete(string playlistId, string creatorId);
 
-        IEnumerable<FavoritePlaylist> GetFavoritePlaylists(string userId);
+        IEnumerable<UsersPlaylistStatus> GetFavoritePlaylists(string userId);
     }
 }
