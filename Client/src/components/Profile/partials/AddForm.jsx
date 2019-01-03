@@ -37,8 +37,6 @@ class AddForm extends Component {
                     let isTrue = true;
                     this.props.getPlaylist(id)
                         .then(() => {
-                            console.log(this.props.playlist);
-
                             for (const currentSong of this.props.playlist.songs) {
                                 if (currentSong.title === songTitle) {
                                     isTrue = false;
@@ -55,8 +53,7 @@ class AddForm extends Component {
                             } else {
                                 this.props.ajaxError();
                             }
-                        })
-
+                        });
                 });
         }
     }
