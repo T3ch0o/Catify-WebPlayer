@@ -117,6 +117,12 @@
                       .Where(ps => ps.UserId == userId && ps.IsFavorite);
         }
 
+        public UsersPlaylistStatus GetUserPlaylistStatus(string userId, string playlistId)
+        {
+            return _db.UsersPlaylistStatuses
+                      .FirstOrDefault(ps => ps.PlaylistId == playlistId && ps.UserId == userId);
+        }
+
         public async Task<UserProfileModel> Get(string id)
         {
             CatifyUser user = await _userManager.FindByIdAsync(id);

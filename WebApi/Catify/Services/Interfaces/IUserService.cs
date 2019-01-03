@@ -21,6 +21,8 @@
 
         IEnumerable<UsersPlaylistStatus> GetUserFavoritePlaylists(string userId);
 
+        UsersPlaylistStatus GetUserPlaylistStatus(string userId, string playlistId);
+
         Task<UserProfileModel> Get(string id);
     }
 }
