@@ -83,37 +83,47 @@
             await _signInManager.SignOutAsync();
         }
 
-        public void AddPlaylistToFavorites(string userId, string playlistId)
+        public void CreateUserPlaylistStatus(string userId, string playlistId)
         {
-            FavoritePlaylist favoritePlaylist = new FavoritePlaylist
+            UsersPlaylistStatus usersPlaylistStatus = new UsersPlaylistStatus
             {
                 UserId = userId,
                 PlaylistId = playlistId
             };
 
-            _db.FavoritePlaylists.Add(favoritePlaylist);
+            _db.UsersPlaylistStatuses.Add(usersPlaylistStatus);
             _db.SaveChanges();
         }
 
-        public void RemovePlaylistFromFavorites(string userId, string playlistId)
+        public void UpdateUserPlaylistStatus(string userId, string playlistId, string modifier, bool isAdded)
         {
-            FavoritePlaylist favoritePlaylist = _db.FavoritePlaylists.FirstOrDefault(fp => fp.UserId == userId && fp.PlaylistId == playlistId);
+            UsersPlaylistStatus userPlaylistStatus = _db.UsersPlaylistStatuses.FirstOrDefault(ps => ps.UserId == userId && ps.PlaylistId == playlistId);
 
-            _db.FavoritePlaylists.Remove(favoritePlaylist);
+            if (modifier == "like")
+            {
+                userPlaylistStatus.IsLiked = isAdded;
+            }
+            else if (modifier == "favorite")
+            {
+                userPlaylistStatus.IsFavorite = isAdded;
+            }
+
             _db.SaveChanges();
         }
 
-        public IEnumerable<FavoritePlaylist> GetUserFavoritePlaylists(string userId)
+        public IEnumerable<UsersPlaylistStatus> GetUserFavoritePlaylists(string userId)
         {
-            return _db.FavoritePlaylists
-                      .Where(fp => fp.UserId == userId);
+            return _db.UsersPlaylistStatuses
+                      .Where(ps => ps.UserId == userId && ps.IsFavorite);
         }
 
         public async Task<UserProfileModel> Get(string id)
         {
             CatifyUser user = await _userManager.FindByIdAsync(id);
             IList<string> roles = await _userManager.GetRolesAsync(user);
-            List<string> favoritePlaylists = GetUserFavoritePlaylists(id).Select(fp => fp.PlaylistId).ToList();
+            List<string> favoritePlaylists = GetUserFavoritePlaylists(id)
+                                             .Where(fp => fp.UserId == id && fp.IsFavorite)
+                                             .Select(fp => fp.PlaylistId).ToList();
 
             return new UserProfileModel
             {
