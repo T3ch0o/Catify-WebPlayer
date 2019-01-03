@@ -17,6 +17,10 @@
 
         public int Favorites { get; set; }
 
+        public bool IsLiked { get; set; }
+
+        public bool IsFavorite { get; set; }
+
         public DateTime CreationDate { get; set; }
 
         public ICollection<SongModel> Songs { get; set; }
