@@ -15,6 +15,6 @@
 
         public DbSet<Song> Songs { get; set; }
 
-        public DbSet<FavoritePlaylist> FavoritePlaylists { get; set; }
+        public DbSet<UsersPlaylistStatus> UsersPlaylistStatuses { get; set; }
     }
 }
