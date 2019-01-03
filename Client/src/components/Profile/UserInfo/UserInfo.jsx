@@ -18,7 +18,7 @@ class UserInfo extends Component {
     componentDidMount() {
         this.props.userInfo()
             .then((data) => {
-                this.setState({ username: data.username, email: data.email, favoritePlaylists: data.favorites });
+                this.setState({ username: data.username, email: data.email, favoritePlaylists: data.favoritePlaylists });
             });
     }
 
