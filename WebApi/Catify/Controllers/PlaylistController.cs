@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Security.Claims;
 
     using Catify.Entities;
     using Catify.Models;
@@ -55,6 +56,14 @@
                 CreationDate = playlist.CreationDate,
                 Songs = songs
             };
+
+            UsersPlaylistStatus userPlaylistStatus = _userService.GetUserPlaylistStatus(User.Identity.Name, playlist.Id);
+
+            if (User.Identity.IsAuthenticated && userPlaylistStatus != null)
+            {
+                playlistModel.IsFavorite = userPlaylistStatus.IsFavorite;
+                playlistModel.IsLiked = userPlaylistStatus.IsLiked;
+            }
 
             return Ok(playlistModel);
         }
@@ -111,7 +120,10 @@
         {
             if (ModelState.IsValid)
             {
-                bool isUpdated = _playlistService.Edit(model, id, User.Identity.Name);
+                string role = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).Any() ? "Administrator" : "User";
+                string creatorId = User.Identity.Name;
+
+                bool isUpdated = _playlistService.Edit(model, id, creatorId, role);
 
                 if (isUpdated)
                 {
@@ -151,7 +163,10 @@
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult Delete([FromRoute]string id)
         {
-            bool isDeleted = _playlistService.Delete(id, User.Identity.Name);
+            string role = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).Any() ? "Administrator" : "User";
+            string creatorId = User.Identity.Name;
+
+            bool isDeleted = _playlistService.Delete(id, creatorId, role);
 
             if (isDeleted)
             {
