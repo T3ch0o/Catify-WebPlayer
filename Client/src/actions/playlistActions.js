@@ -20,8 +20,28 @@ export function getPlaylistsAction() {
     return function(dispatch) {
         dispatch(beginAction());
         playlist.getAll()
-            .then(data => {
-                dispatch(getPlaylists(data));
+            .then(response => {
+                if (response.status !== 200) {
+                    throw Error();
+                }
+
+                dispatch(getPlaylists(response.data));
+                dispatch(successAction());
+            })
+            .catch(error => dispatch(errorAction()));
+    }
+}
+
+export function getPlaylistAction(id) {
+    return function(dispatch) {
+        dispatch(beginAction());
+        return playlist.get(id)
+            .then(response => {
+                if (response.status !== 200) {
+                    throw Error();
+                }
+
+                dispatch(getPlaylist(response.data));
                 dispatch(successAction());
             })
             .catch(error => dispatch(errorAction()));
@@ -48,7 +68,11 @@ export function editPlaylistAction(payload, id) {
     return function(dispatch) {
         dispatch(beginAction());
         return playlist.edit(payload, id)
-            .then(data => {
+            .then(response => {
+                if (response.status !== 200) {
+                    throw Error();
+                }
+
                 dispatch(successAction());
             })
             .catch(error => dispatch(errorAction()));
@@ -59,7 +83,26 @@ export function updatePlaylistStatusAction(payload, id) {
     return function(dispatch) {
         dispatch(beginAction());
         return playlist.update(payload, id)
-            .then(data => {
+            .then(response => {
+                if (response.status !== 200) {
+                    throw Error();
+                }
+
+                dispatch(successAction());
+            })
+            .catch(error => dispatch(errorAction()));
+    }
+}
+
+export function updatePlaylistImageAction(payload, id) {
+    return function(dispatch) {
+        dispatch(beginAction());
+        return playlist.updatePlaylistImage(payload, id)
+            .then(response => {
+                if (response.status !== 200) {
+                    throw Error();
+                }
+
                 dispatch(successAction());
             })
             .catch(error => dispatch(errorAction()));
@@ -74,25 +117,18 @@ export function deletePlaylist(id) {
     }
 }
 
-export function getPlaylistAction(id) {
-    return function(dispatch) {
-        dispatch(beginAction());
-        return playlist.get(id)
-            .then(data => {
-                dispatch(getPlaylist(data));
-                dispatch(successAction());
-            })
-            .catch(error => dispatch(errorAction()));
-    }
-}
-
 export function addSongToPlaylistAction(payload, id) {
     return function(dispatch) {
         dispatch(beginAction());
         return playlist.addSong(payload, id)
-            .then(data => {
+            .then(response => {
+                if (response.status !== 200) {
+                    throw Error();
+                }
+
                 dispatch(successAction());
-            });
+            })
+            .catch(error => dispatch(errorAction()));
     }
 }
 
@@ -100,8 +136,13 @@ export function removeSongFromPlaylistAction(id) {
     return function(dispatch) {
         dispatch(beginAction());
         return playlist.removeSong(id)
-            .then(data => {
+            .then(response => {
+                if (response.status !== 200) {
+                    throw Error();
+                }
+
                 dispatch(successAction());
-            });
+            })
+            .catch(error => dispatch(errorAction()));
     }
 }
