@@ -16,7 +16,7 @@ const SearchedPlaylists = function(props) {
                 <Playlist
                     key={p._id}
                     id={p._id}
-                    image={p.imageUrl}
+                    image={p.imagePath}
                     title={p.title}
                 />
             )}
