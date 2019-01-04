@@ -151,28 +151,6 @@ const validationFunc = function(values) {
         };
     };
 
-    const validImageUrl = function() {
-        const imageUrl = values.imageUrl;
-        let imageRegex = new RegExp(
-            /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/
-        );
-        let className = '';
-        let errorMessage = '';
-        let isValid = true;
-
-        if (!imageRegex.test(imageUrl)) {
-            className = 'is-invalid';
-            errorMessage = 'Please enter a valid image url.';
-            isValid = false;
-        }
-
-        return {
-            className,
-            errorMessage,
-            isValid
-        };
-    };
-
     const validSongUrl = function() {
         const songUrl = values.songUrl;
         let songRegex = new RegExp(
@@ -225,7 +203,6 @@ const validationFunc = function(values) {
         validLoginUsername,
         validLoginPassword,
         validTitle,
-        validImageUrl,
         validSongUrl,
         validTags
     }
