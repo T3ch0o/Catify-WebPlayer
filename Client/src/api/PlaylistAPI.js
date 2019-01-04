@@ -1,89 +1,80 @@
+import axios from 'axios';
+
 const playlist = {
     get: function(id) {
-        return fetch(`https://localhost:44336/api/playlist/${id}`, {
-            method: 'GET',
+        return axios.get(`https://localhost:44336/api/playlist/${id}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('authToken')}`,
                 'Content-Type': 'application/json'
             }
-        })
-            .then(res => res.json());
+        });
     },
     getAll: function() {
-        return fetch(`https://localhost:44336/api/playlist/all`, {
-            method: 'GET',
+        return axios.get(`https://localhost:44336/api/playlist/all`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('authToken')}`
             }
-        })
-            .then(res => res.json());
+        });
     },
     getMusicTitle: function(link) {
         const proxyurl = "https://cors-anywhere.herokuapp.com/";
-        return fetch(proxyurl + link)
-            .then(res => res.text());
+        return axios.get(proxyurl + link)
+            .then(response => response.data);
     },
     create: function(payload) {
-        return fetch(`https://localhost:44336/api/playlist`, {
-            method: 'POST',
+        return axios.post(`https://localhost:44336/api/playlist`, payload, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('authToken')}`,
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-            .then(res => res.json());
+            }
+        });
     },
     addSong: function(payload, id) {
-        return fetch(`https://localhost:44336/api/song/${id}`, {
-            method: 'POST',
+        return axios.post(`https://localhost:44336/api/song/${id}`, payload, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('authToken')}`,
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-            .then(res => res.json());
+            }
+        });
     },
     removeSong: function(id) {
-        return fetch(`https://localhost:44336/api/song/${id}`, {
-            method: 'DELETE',
+        return axios.delete(`https://localhost:44336/api/song/${id}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('authToken')}`
             }
-        })
-            .then(res => res.json());
+        });
     },
     update: function(payload, id) {
-        return fetch(`https://localhost:44336/api/playlist/update/${id}`, {
-            method: 'PUT',
+        return axios.put(`https://localhost:44336/api/playlist/update/${id}`, payload, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('authToken')}`,
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-            .then(res => res.json());
+            }
+        });
     },
     edit: function(payload, id) {
-        return fetch(`https://localhost:44336/api/playlist/${id}`, {
-            method: 'PUT',
+        return axios.put(`https://localhost:44336/api/playlist/${id}`, payload, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('authToken')}`,
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-            .then(res => res.json());
+            }
+        });
     },
     delete: function(id) {
-        return fetch(`https://localhost:44336/api/playlist/${id}`, {
-            method: 'DELETE',
+        return axios.delete(`https://localhost:44336/api/playlist/${id}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('authToken')}`
             }
         })
             .then(res => res.json());
+    },
+    updatePlaylistImage: function(payload, id) {
+        return axios.post(`https://localhost:44336/api/image/${id}`, payload,{
+            headers: {
+                'Content-Type':'multipart/form-data',
+                Authorization: `Bearer ${localStorage.getItem('authToken')}`
+            }}
+        )
     }
 };
 
