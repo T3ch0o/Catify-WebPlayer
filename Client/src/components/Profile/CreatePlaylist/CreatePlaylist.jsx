@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import decode from "unescape";
+import axios from 'axios';
 
 import Input from '../../common/Input';
+import InputFile from '../partials/InputFile';
 import validationFunc from '../../../utils/validateForms';
 import dataCollector from '../../../utils/dataCollector';
+import fileCollector from '../../../utils/fileCollector';
 import { successAction, errorAction } from '../../../actions/ajaxActions';
-import { createPlaylistAction, getMusicTitleAction } from '../../../actions/playlistActions';
+import { createPlaylistAction, getMusicTitleAction, uploadPlaylistImageAction } from '../../../actions/playlistActions';
 
 class CreatePlaylist extends Component {
     constructor() {
@@ -15,9 +18,8 @@ class CreatePlaylist extends Component {
 
         this.state = {
             title: 'empty',
-            imageUrl: 'https://empty.jpg',
             songUrl: 'https://soundcloud.com/edm/empty',
-            tags: 'none,'
+            tags: 'none'
         };
 
         this.onSubmitHandler = this.onSubmitHandler.bind(this);
@@ -27,11 +29,13 @@ class CreatePlaylist extends Component {
         event.preventDefault();
         const payload = this.state;
         const validation = validationFunc(payload);
+        console.log(payload);
+
         let validData = true;
-        const isValid = validation.validTitle().isValid && validation.validImageUrl().isValid
+        const isValid = validation.validTitle().isValid
             && validation.validSongUrl().isValid && validation.validTags().isValid;
 
-        for (const element of Object.values(payload)) {
+        for (const element of Object.values(payload).filter(e => e.hasOwnProperty("formData"))) {
             if (element.includes('empty')) {
                 validData = false;
                 break;
@@ -49,11 +53,17 @@ class CreatePlaylist extends Component {
                     payload.songTitle = songTitle;
 
                     this.props.createPlaylist(payload)
-                        .then(res => {
-                            this.props.ajaxSuccess();
-                            this.props.history.push('/profile/manage-playlists');
-                        })
-                        .catch(error => this.props.ajaxError());
+                        .then(response => {
+                            if (response.status !== 200) {
+                                throw Error();
+                            }
+
+                            this.props.uploadPlaylistImage(this.state.formData, response.data.id)
+                                .then(() => {
+                                    this.props.ajaxSuccess();
+                                    this.props.history.push('/profile/manage-playlists');
+                                });
+                        });
                 });
         }
     }
@@ -76,18 +86,16 @@ class CreatePlaylist extends Component {
                         </div>}
                         <h1 className="form-heading">Create Playlist</h1>
                         <div className="line"/>
-                        <form onSubmit={this.onSubmitHandler}>
+                        <form onSubmit={this.onSubmitHandler} encType="multipart/form-data">
                             <Input
                                 name="title"
                                 placeholder="playlist title"
                                 onChange={dataCollector.bind(this)}
                                 validation={validation.validTitle()}
                             />
-                            <Input
-                                name="imageUrl"
-                                placeholder="playlist image URL"
-                                onChange={dataCollector.bind(this)}
-                                validation={validation.validImageUrl()}
+                            <InputFile
+                                name="image"
+                                onChange={fileCollector.bind(this)}
                             />
                             <Input
                                 name="songUrl"
@@ -123,6 +131,7 @@ function mapDispatchToProps(dispatch) {
     return {
         createPlaylist: (payload) => dispatch(createPlaylistAction(payload)),
         getMusicTitle: (link) => dispatch(getMusicTitleAction(link)),
+        uploadPlaylistImage: (payload, id) => dispatch(uploadPlaylistImageAction(payload, id)),
         ajaxSuccess: () => dispatch(successAction()),
         ajaxError: () => dispatch(errorAction())
     }
