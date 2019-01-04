@@ -18,7 +18,11 @@ class UserInfo extends Component {
     componentDidMount() {
         this.props.userInfo()
             .then((data) => {
-                this.setState({ username: data.username, email: data.email, favoritePlaylists: data.favoritePlaylists });
+                this.setState({
+                    username: data.username,
+                    email: data.email,
+                    favoritePlaylists: data.favoritePlaylists
+                });
             });
     }
 
@@ -35,7 +39,9 @@ class UserInfo extends Component {
                             <div className="info">
                                 <div className="profile-info">Username <span><Flip bottom>{username || 'Loading...'}</Flip></span></div>
                                 <div className="profile-info">Email <span><Flip bottom>{email || 'Loading...'}</Flip></span></div>
-                                <div className="profile-info">Favorite Playlists <span><Flip left>{ favoritePlaylists ? favoritePlaylists.length : 0 } added</Flip></span></div>
+                                <div className="profile-info">Favorite Playlists
+                                    <span><Flip left>{ favoritePlaylists ? favoritePlaylists.length : 0 } added</Flip></span>
+                                </div>
                             </div>
                         </div>
                     </section>
