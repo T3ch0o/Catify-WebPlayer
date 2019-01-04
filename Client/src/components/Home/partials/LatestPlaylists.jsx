@@ -13,7 +13,7 @@ const LatestPlaylist = function(props) {
                 <Playlist
                     key={p.id}
                     id={p.id}
-                    image={p.imageUrl}
+                    image={p.imagePath}
                     title={p.title}
                     creator={p.creator}
                 />
