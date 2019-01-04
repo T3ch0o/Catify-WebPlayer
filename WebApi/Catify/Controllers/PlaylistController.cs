@@ -4,6 +4,8 @@
     using System.Linq;
     using System.Security.Claims;
 
+    using AutoMapper;
+
     using Catify.Entities;
     using Catify.Models;
     using Catify.Models.BindingModels;
@@ -19,10 +21,13 @@
 
         private readonly IUserService _userService;
 
-        public PlaylistController(IPlaylistService playlistService, IUserService userService)
+        private readonly IMapper _mapper;
+
+        public PlaylistController(IPlaylistService playlistService, IUserService userService, IMapper mapper)
         {
             _playlistService = playlistService;
             _userService = userService;
+            _mapper = mapper;
         }
 
         [HttpGet("{id}")]
@@ -38,24 +43,7 @@
                 return BadRequest();
             }
 
-            List<SongModel> songs = new List<SongModel>();
-
-            foreach (Song song in playlist.Songs)
-            {
-                songs.Add(new SongModel{ Title = song.Title, Url = song.Url });
-            }
-
-            PlaylistReturnModel playlistModel = new PlaylistReturnModel
-            {
-                Id = playlist.Id,
-                Creator = playlist.Creator.UserName,
-                Title = playlist.Title,
-                ImageUrl = playlist.ImageUrl,
-                Likes = playlist.Likes,
-                Favorites = playlist.Favorites,
-                CreationDate = playlist.CreationDate,
-                Songs = songs
-            };
+            PlaylistReturnModel playlistModel = _mapper.Map<PlaylistReturnModel>(playlist);
 
             UsersPlaylistStatus userPlaylistStatus = _userService.GetUserPlaylistStatus(User.Identity.Name, playlist.Id);
 
@@ -75,22 +63,17 @@
         public IActionResult All()
         {
             IEnumerable<Playlist> playlists = _playlistService.GetAll();
-            List<AllPlaylistsModel> playlistsModel = new List<AllPlaylistsModel>();
-            IEnumerable<UsersPlaylistStatus> favoritePlaylists = _userService.GetUserFavoritePlaylists(User.Identity.Name);
+            UsersPlaylistStatus[] favoritePlaylists = _userService.GetUserFavoritePlaylists(User.Identity.Name).ToArray();
+            List<PlaylistsReturnModel> playlistsModel = new List<PlaylistsReturnModel>();
 
             foreach (Playlist playlist in playlists)
             {
-                bool isFavorite = favoritePlaylists.Any(p => p.PlaylistId == playlist.Id && p.IsFavorite);
+                bool isFavorite = favoritePlaylists.Any(p => p.PlaylistId == playlist.Id);
 
-                playlistsModel.Add(new AllPlaylistsModel
-                {
-                    Id = playlist.Id,
-                    Creator = playlist.Creator.UserName,
-                    Title = playlist.Title,
-                    ImageUrl = playlist.ImageUrl,
-                    CreationDate = playlist.CreationDate,
-                    IsFavoritePlaylist = isFavorite
-                });
+                PlaylistsReturnModel playlistModel = _mapper.Map<PlaylistsReturnModel>(playlist);
+                playlistModel.IsFavoritePlaylist = isFavorite;
+
+                playlistsModel.Add(playlistModel);
             }
 
             return Ok(playlistsModel);
@@ -104,9 +87,14 @@
         {
             if (ModelState.IsValid)
             {
-                _playlistService.Create(model, User.Identity.Name);
+                string creatorId = User.Identity.Name;
+                string playlistId = _playlistService.Create(model, creatorId);
 
-                return Ok(new { Created = true });
+                return Ok(new
+                {
+                    Created = true,
+                    Id = playlistId
+                });
             }
 
             return BadRequest(ModelState);
