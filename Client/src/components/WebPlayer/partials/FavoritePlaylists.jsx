@@ -13,7 +13,7 @@ const FavoritePlaylists = function(props) {
                 <Playlist
                     key={p.id}
                     id={p.id}
-                    image={p.imageUrl}
+                    image={p.imagePath}
                     title={p.title}
                 />
             ) : <p className="playlist-message" >You don't have any favourites go and <Link to="/web-player/playlists">add some</Link>.</p>}
