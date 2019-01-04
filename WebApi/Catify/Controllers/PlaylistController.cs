@@ -130,7 +130,7 @@
                     return Ok(new { Edited = true });
                 }
 
-                return BadRequest();
+                return Unauthorized();
             }
 
             return BadRequest(ModelState);
@@ -151,7 +151,7 @@
                     return Ok(new { StatusUpdate = true });
                 }
 
-                return BadRequest();
+                return Unauthorized();
             }
 
             return BadRequest(ModelState);
@@ -173,7 +173,7 @@
                 return Ok(new { Removed = true });
             }
 
-            return BadRequest();
+            return Unauthorized();
         }
     }
 }
