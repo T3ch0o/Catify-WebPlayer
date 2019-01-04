@@ -11,21 +11,20 @@ export default function playlistReducer(state = [], action) {
 
 function reconcile(oldData, newData) {
     const newDataById = {};
-
     for (const entry of newData) {
-        newDataById[entry._id] = entry;
+        newDataById[entry.id] = entry;
     }
 
     const result = [];
 
     for (const entry of oldData) {
-        if (!newDataById[entry._id]) {
+        if (!newDataById[entry.id]) {
             continue;
         }
 
-        if (newDataById[entry._id]) {
-            result.push(newDataById[entry._id]);
-            delete newDataById[entry._id];
+        if (newDataById[entry.id]) {
+            result.push(newDataById[entry.id]);
+            delete newDataById[entry.id];
         } else {
             result.push(entry);
         }
@@ -35,7 +34,7 @@ function reconcile(oldData, newData) {
         result.push(newDataById[id]);
     }
 
-    result.sort((a, b) => a.creationDate < b.creationDate);
+    result.sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
 
     return result;
 }
