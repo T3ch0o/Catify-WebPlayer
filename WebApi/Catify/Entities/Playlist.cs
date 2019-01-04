@@ -8,7 +8,7 @@
     {
         public string Title { get; set; }
 
-        public string ImageUrl { get; set; }
+        public string ImagePath { get; set; }
 
         public int Likes { get; set; }
 
