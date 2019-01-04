@@ -8,6 +8,8 @@
     using System.Text;
     using System.Threading.Tasks;
 
+    using AutoMapper;
+
     using Catify.Data;
     using Catify.Entities;
     using Catify.Models;
@@ -28,14 +30,18 @@
 
         private readonly CatifyDbContext _db;
 
+        private readonly IMapper _mapper;
+
         public UserService(IOptions<JwtSettings> jwtSettings,
                            SignInManager<CatifyUser> singInManager,
                            UserManager<CatifyUser> userManager,
-                           CatifyDbContext db)
+                           CatifyDbContext db,
+                           IMapper mapper)
         {
             _signInManager = singInManager;
             _userManager = userManager;
             _db = db;
+            _mapper = mapper;
             _jwtSettings = jwtSettings.Value;
         }
 
@@ -55,11 +61,8 @@
 
         public async Task<UserReturnModel> Register(RegisterBindingModel model)
         {
-            CatifyUser user = new CatifyUser
-            {
-                UserName = model.Username,
-                Email = model.Email
-            };
+
+            CatifyUser user = _mapper.Map<CatifyUser>(model);
 
             IdentityResult result = await _userManager.CreateAsync(user, model.Password);
 
