@@ -15,15 +15,17 @@ class WebPlayerPage extends Component {
                 url: ""
             }]
         };
+
+        this.interval = null;
     }
 
     componentDidMount() {
-        setInterval(() => {
+        this.interval = setInterval(() => {
             if (this.props.playlist.hasOwnProperty("songs")) {
                 let { songs } = this.props.playlist;
                 this.setState({ songs });
             }
-        }, 0)
+        }, 0);
     }
 
     componentWillReceiveProps(nextProp) {
@@ -36,6 +38,10 @@ class WebPlayerPage extends Component {
             let { songs } = this.props.playlist;
             this.setState({ songs });
         }
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
     }
 
     render() {
