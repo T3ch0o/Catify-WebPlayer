@@ -1,5 +1,5 @@
 import { AUTHORIZATION_SUCCESS, REDIRECTED } from "./actionTypes";
-import { beginAction } from './ajaxActions';
+import { beginAction, errorAction } from './ajaxActions';
 import user from "../api/UserAPI";
 
 function success() {
@@ -25,11 +25,11 @@ export function registerAction(payload) {
         dispatch(beginAction());
         return user.register(payload)
             .then(response => {
-                if (response.message) {
+                if (response.status !== 200) {
                     throw Error();
                 }
 
-                saveToLocalStorage(response);
+                saveToLocalStorage(response.data);
                 dispatch(success());
             });
     };
@@ -40,13 +40,13 @@ export function loginAction(payload) {
         dispatch(beginAction());
         return user.login(payload)
             .then(response => {
-                if (response.message) {
+                if (response.status !== 200) {
                     throw Error();
                 }
 
-                saveToLocalStorage(response);
+                saveToLocalStorage(response.data);
                 dispatch(success());
-            })
+            });
     };
 }
 
@@ -61,12 +61,14 @@ export function logoutAction() {
 
 export function userAction() {
     return function(dispatch) {
-        return user.get();
-    }
-}
+        return user.get()
+            .then(response => {
+                if (response.status !== 200) {
+                    throw Error();
+                }
 
-export function updateUserAction(payload, id) {
-    return function(dispatch) {
-        return user.update(payload, id);
-    }
+                return response.data;
+            })
+            .catch(error => dispatch(errorAction()));
+    };
 }
