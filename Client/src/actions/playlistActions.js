@@ -94,10 +94,10 @@ export function updatePlaylistStatusAction(payload, id) {
     }
 }
 
-export function updatePlaylistImageAction(payload, id) {
+export function uploadPlaylistImageAction(payload, id) {
     return function(dispatch) {
         dispatch(beginAction());
-        return playlist.updatePlaylistImage(payload, id)
+        return playlist.uploadPlaylistImage(payload, id)
             .then(response => {
                 if (response.status !== 200) {
                     throw Error();
