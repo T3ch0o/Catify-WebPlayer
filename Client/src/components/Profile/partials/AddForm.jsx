@@ -44,16 +44,16 @@ class AddForm extends Component {
                             }
 
                             if (isTrue) {
-                                let payload = {
+                                const payload = {
                                     title: songTitle,
                                     url: songUrl
                                 };
-
                                 this.props.addSong(payload, id);
                             } else {
-                                this.props.ajaxError();
+                                throw Error();
                             }
-                        });
+                        })
+                        .catch(error => this.props.ajaxError());
                 });
         }
     }
