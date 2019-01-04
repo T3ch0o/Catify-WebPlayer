@@ -37,7 +37,7 @@
                     return Ok(new { Created = true });
                 }
 
-                return BadRequest();
+                return Unauthorized();
             }
 
             return BadRequest(ModelState);
@@ -61,7 +61,7 @@
                     return Ok(new { Deleted = true });
                 }
 
-                return BadRequest();
+                return Unauthorized();
             }
 
             return BadRequest(ModelState);
