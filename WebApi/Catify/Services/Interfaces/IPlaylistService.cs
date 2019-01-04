@@ -11,7 +11,7 @@
 
         IEnumerable<Playlist> GetAll();
 
-        void Create(PlaylistBindingModel model, string creatorId);
+        string Create(PlaylistBindingModel model, string creatorId);
 
         bool Edit(EditPlaylistBindingModel model, string playlistId, string creatorId, string role);
 
@@ -20,5 +20,7 @@
         bool Delete(string playlistId, string creatorId, string role);
 
         IEnumerable<UsersPlaylistStatus> GetFavoritePlaylists(string userId);
+
+        void UpdateImagePath(string playlistId, string imagePath);
     }
 }

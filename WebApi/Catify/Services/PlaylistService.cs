@@ -1,14 +1,17 @@
 ﻿namespace Catify.Services
 {
-    using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
+
+    using AutoMapper;
 
     using Catify.Data;
     using Catify.Entities;
     using Catify.Models.BindingModels;
     using Catify.Services.Interfaces;
 
+    using Microsoft.AspNetCore.Hosting;
     using Microsoft.EntityFrameworkCore;
 
     public class PlaylistService : IPlaylistService
@@ -19,11 +22,21 @@
 
         private readonly IUserService _userService;
 
-        public PlaylistService(CatifyDbContext db, ISongService songService, IUserService userService)
+        private readonly IMapper _mapper;
+
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public PlaylistService(CatifyDbContext db,
+                               ISongService songService,
+                               IUserService userService,
+                               IMapper mapper,
+                               IHostingEnvironment hostingEnvironment)
         {
             _db = db;
             _songService = songService;
             _userService = userService;
+            _mapper = mapper;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public Playlist Get(string id)
@@ -42,20 +55,19 @@
                       .Include(playlist => playlist.Creator);
         }
 
-        public void Create(PlaylistBindingModel model, string creatorId)
+        public string Create(PlaylistBindingModel model, string creatorId)
         {
-            Playlist playlist = new Playlist
-            {
-                Title = model.Title,
-                ImageUrl = model.ImageUrl,
-                CreationDate = DateTime.UtcNow,
-                CreatorId = creatorId
-            };
+            Playlist playlist = _mapper.Map<Playlist>(model);
+
+            playlist.CreatorId = creatorId;
+            playlist.ImagePath = Path.Combine("PlaylistImages", "default-cover.jpg");
 
             _db.Add(playlist);
             _db.SaveChanges();
 
             _songService.Create(model.SongTitle, model.SongUrl, creatorId, playlist.Id, null);
+
+            return playlist.Id;
         }
 
         public bool Edit(EditPlaylistBindingModel model, string playlistId, string creatorId, string role)
@@ -70,7 +82,7 @@
             if (playlist.CreatorId == creatorId || role == "Administrator")
             {
                 playlist.Title = model.Title;
-                playlist.ImageUrl = model.ImageUrl;
+                playlist.ImagePath = playlist.ImagePath = Path.Combine("PlaylistImages", "default-cover.jpg");
 
                 _db.SaveChanges();
 
@@ -134,9 +146,13 @@
             {
                 _songService.DeleteAll(playlistId);
 
-                IEnumerable<UsersPlaylistStatus> favoritePlaylists = _db.UsersPlaylistStatuses.Where(fp => fp.PlaylistId == playlistId);
+                IEnumerable<UsersPlaylistStatus> playlistStatuses = _db.UsersPlaylistStatuses.Where(ps => ps.PlaylistId == playlistId);
 
-                _db.UsersPlaylistStatuses.RemoveRange(favoritePlaylists);
+                _db.UsersPlaylistStatuses.RemoveRange(playlistStatuses);
+                if (playlist.ImagePath != "PlaylistImages\\default-cover.jpg")
+                {
+                    File.Delete(Path.Combine(_hostingEnvironment.WebRootPath, playlist.ImagePath));
+                }
                 _db.Playlists.Remove(playlist);
                 _db.SaveChanges();
 
@@ -151,6 +167,15 @@
             IEnumerable<UsersPlaylistStatus> favoritePlaylists = _db.UsersPlaylistStatuses.Where(fp => fp.UserId == userId);
 
             return favoritePlaylists;
+        }
+
+        public void UpdateImagePath(string playlistId, string imagePath)
+        {
+            Playlist playlist = _db.Playlists.FirstOrDefault(p => p.Id == playlistId);
+
+            playlist.ImagePath = imagePath;
+
+            _db.SaveChanges();
         }
     }
 }
