@@ -15,7 +15,7 @@ const MyPlaylists = function(props) {
                 <Playlist
                     key={p.id}
                     id={p.id}
-                    image={p.imageUrl}
+                    image={p.imagePath}
                     title={p.title}
                 />
             ) : <p className="playlist-message" >You have no playlists go and <Link to="/profile/create-playlist">create some</Link>.</p>}
