@@ -16,7 +16,7 @@ class ManagePlaylists extends Component {
         this.props.deletePlaylist(id)
             .then(() => {
                 this.props.getMyPlaylists();
-            })
+            });
     }
 
     render() {
