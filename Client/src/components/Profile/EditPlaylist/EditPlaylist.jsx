@@ -5,7 +5,10 @@ import { connect } from 'react-redux';
 import Input from './Input';
 import validationFunc from '../../../utils/validateForms';
 import dataCollector from '../../../utils/dataCollector';
-import { editPlaylistAction } from '../../../actions/playlistActions';
+import { editPlaylistAction, uploadPlaylistImageAction } from '../../../actions/playlistActions';
+import { successAction, errorAction } from '../../../actions/ajaxActions';
+import fileCollector from '../../../utils/fileCollector';
+import InputFile from '../partials/InputFile';
 
 class EditPlaylist extends Component {
     constructor(props) {
@@ -13,7 +16,6 @@ class EditPlaylist extends Component {
 
         this.state = {
             title: '',
-            imageUrl: '',
             tags: ''
         };
 
@@ -29,30 +31,35 @@ class EditPlaylist extends Component {
             return;
         }
 
-        const {title, imageUrl, tags} = Object.assign({}, this.props.playlists.find(p => p.id === id));
+        const {title, tags} = Object.assign({}, this.props.playlists.find(p => p.id === id));
 
-        this.setState({title, imageUrl, tags});
+        this.setState({title, tags});
     }
 
     onSubmitHandler(event) {
         event.preventDefault();
         const payload = this.state;
         const validation = validationFunc(payload);
-        const isValid = validation.validTitle().isValid && validation.validImageUrl().isValid && validation.validTags().isValid;
+        const isValid = validation.validTitle().isValid && validation.validTags().isValid;
 
         if (isValid) {
             const id = this.props.match.params.id;
             const currentPlaylist = Object.assign({}, this.props.playlists.find(p => p.id === id));
             currentPlaylist.title = payload.title;
-            currentPlaylist.imageUrl = payload.imageUrl;
 
             this.props.editPlaylist(currentPlaylist, id)
-                .then(() => this.props.history.push('/profile/manage-playlists'));
+                .then(() => {
+                    this.props.uploadPlaylistImage(this.state.formData, id)
+                        .then(() => {
+                            this.props.ajaxSuccess();
+                            this.props.history.push('/profile/manage-playlists');
+                        });
+                });
         }
     }
 
     render() {
-        const { title, imageUrl, tags } = this.state;
+        const { title, tags } = this.state;
         const { begin } = this.props;
         const validation = validationFunc(this.state);
 
@@ -70,7 +77,7 @@ class EditPlaylist extends Component {
                         </div>}
                         <h1 className="form-heading">Edit Playlist</h1>
                         <div className="line"/>
-                        <form onSubmit={this.onSubmitHandler}>
+                        <form onSubmit={this.onSubmitHandler} encType="multipart/form-data">
                             <Input
                                 name="title"
                                 placeholder="playlist title"
@@ -78,12 +85,9 @@ class EditPlaylist extends Component {
                                 validation={validation.validTitle()}
                                 value={title}
                             />
-                            <Input
-                                name="imageUrl"
-                                placeholder="playlist image URL"
-                                onChange={dataCollector.bind(this)}
-                                validation={validation.validImageUrl()}
-                                value={imageUrl}
+                            <InputFile
+                                name="image"
+                                onChange={fileCollector.bind(this)}
                             />
                             <Input
                                 name="tags"
@@ -113,7 +117,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        editPlaylist: (payload, id) => dispatch(editPlaylistAction(payload, id))
+        editPlaylist: (payload, id) => dispatch(editPlaylistAction(payload, id)),
+        uploadPlaylistImage: (payload, id) => dispatch(uploadPlaylistImageAction(payload, id)),
+        ajaxSuccess: () => dispatch(successAction()),
+        ajaxError: () => dispatch(errorAction())
     }
 }
 
