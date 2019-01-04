@@ -39,7 +39,6 @@ class ProfilePage extends Component {
                         <ViewComponent />
                     </section>
                 </div>
-
         );
     }
 }
