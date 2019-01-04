@@ -68,7 +68,7 @@ const playlist = {
         })
             .then(res => res.json());
     },
-    updatePlaylistImage: function(payload, id) {
+    uploadPlaylistImage: function(payload, id) {
         return axios.post(`https://localhost:44336/api/image/${id}`, payload,{
             headers: {
                 'Content-Type':'multipart/form-data',
