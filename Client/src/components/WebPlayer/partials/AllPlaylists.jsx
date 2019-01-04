@@ -11,7 +11,7 @@ const AllPlaylists = function(props) {
                 <Playlist
                     key={p.id}
                     id={p.id}
-                    image={p.imageUrl}
+                    image={p.imagePath}
                     title={p.title}
                 />
             )}
