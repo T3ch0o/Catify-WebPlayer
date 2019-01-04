@@ -2,6 +2,8 @@
 {
     using System.Text;
 
+    using AutoMapper;
+
     using Catify.Data;
     using Catify.Entities;
     using Catify.Middlewares;
@@ -45,6 +47,7 @@
                 .AddEntityFrameworkStores<CatifyDbContext>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddAutoMapper();
 
             // Configure strongly typed settings objects
 
@@ -97,6 +100,7 @@
             app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseMvc();
         }
     }
