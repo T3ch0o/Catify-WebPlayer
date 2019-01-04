@@ -32,22 +32,23 @@ class PlaylistComponent extends Component {
         this.props.playlist.song = query.song - 1;
         this.props.getPlaylist(id)
             .then(() => {
-                this.setState({liked: this.props.playlist.isLiked, favorite: this.props.playlist.isFavorite})
+                this.setState({
+                    liked: this.props.playlist.isLiked,
+                    favorite: this.props.playlist.isFavorite
+                });
             });
     }
 
     like() {
         this.type = 'likes';
         this.currentState = 'liked';
-        const format = formatData.bind(this);
-        format();
+        formatData.bind(this)();
     }
 
     addToFavorites() {
         this.type = 'favorites';
         this.currentState = 'favorite';
-        const format = formatData.bind(this);
-        format();
+        formatData.bind(this)();
     }
 
     choseSong() {
@@ -63,13 +64,13 @@ class PlaylistComponent extends Component {
     }
 
     render() {
-        const { id ,songs, title, imageUrl, creator, likes, favorites } = this.props.playlist;
+        const { id ,songs, title, imagePath, creator, likes, favorites } = this.props.playlist;
         return (
             <div className="playlist-playing">
                 <section className="playlist-view">
                     <Fade big>
                         <div>
-                            <img className="player-img" src={imageUrl} alt=""/>
+                            <img className="player-img" src={'https://localhost:44336/' + (imagePath ? imagePath : "PlaylistImages/default-cover.jpg")} alt=""/>
                             <p className="playlist-title">{title}</p>
                             <p className="playlist-creator">{creator}</p>
                             <p className="playlist-information">{songs ? songs.length : 0} songs - {likes} likes - {favorites} favorites</p>
@@ -85,7 +86,6 @@ class PlaylistComponent extends Component {
                     </Fade>
                     <SongsList songs={songs} id={id} songId={this.props.playlist.song} creator={creator} choseSong={this.choseSong} deleteSong={this.deleteSong}/>
                 </section>
-
             </div>
         );
     }
