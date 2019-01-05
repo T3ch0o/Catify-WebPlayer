@@ -36,6 +36,9 @@ class PlaylistComponent extends Component {
                     liked: this.props.playlist.isLiked,
                     favorite: this.props.playlist.isFavorite
                 });
+            })
+            .catch(() => {
+                this.props.history.push('/');
             });
     }
 
@@ -56,11 +59,11 @@ class PlaylistComponent extends Component {
         this.props.playlist.song = query.song - 1;
     }
 
-    deleteSong() {
-        const id = this.props.match.params.id;
+    deleteSong(id) {
+        const playlistId = this.props.match.params.id;
 
         this.props.removeSong(id)
-            .then(() => this.props.getPlaylist(id));
+            .then(() => this.props.getPlaylist(playlistId));
     }
 
     render() {
@@ -84,7 +87,7 @@ class PlaylistComponent extends Component {
                             </div>
                         </div>
                     </Fade>
-                    <SongsList songs={songs} id={id} songId={this.props.playlist.song} creator={creator} choseSong={this.choseSong} deleteSong={this.deleteSong}/>
+                    <SongsList songs={songs} playlistTitle={title} id={id} songId={this.props.playlist.song} creator={creator} choseSong={this.choseSong} deleteSong={this.deleteSong}/>
                 </section>
             </div>
         );
