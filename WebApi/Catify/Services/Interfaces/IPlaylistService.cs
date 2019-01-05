@@ -7,17 +7,17 @@
 
     public interface IPlaylistService
     {
-        Playlist Get(string id);
+        Playlist Get(string title);
 
         IEnumerable<Playlist> GetAll();
 
         string Create(PlaylistBindingModel model, string creatorId);
 
-        bool Edit(EditPlaylistBindingModel model, string playlistId, string creatorId, string role);
+        bool Edit(EditPlaylistBindingModel model, string title, string creatorId, string role);
 
-        bool UpdateStatus(PlaylistStatusBindingModel model, string playlistId, string userId);
+        bool UpdateStatus(PlaylistStatusBindingModel model, string title, string userId);
 
-        bool Delete(string playlistId, string creatorId, string role);
+        bool Delete(string title, string creatorId, string role);
 
         IEnumerable<UsersPlaylistStatus> GetFavoritePlaylists(string userId);
 
