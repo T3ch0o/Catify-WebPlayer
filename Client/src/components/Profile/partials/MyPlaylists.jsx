@@ -8,14 +8,12 @@ const MyPlaylists = function(props) {
     const user = localStorage.getItem('user');
     const role = localStorage.getItem('role');
     const myPlaylists = role === 'User' ? playlists.filter(p => p.creator === user) : playlists;
-    console.log(playlists);
 
     return (
         <ul>
             {myPlaylists.length !== 0 ? myPlaylists.map(p =>
                 <Playlist
                     key={p.id}
-                    id={p.id}
                     image={p.imagePath}
                     title={p.title}
                     deletePlaylist={deletePlaylist}

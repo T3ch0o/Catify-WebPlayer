@@ -12,7 +12,6 @@ const FavoritePlaylists = function(props) {
             {favoritePlaylists.length !== 0 ? favoritePlaylists.map(p =>
                 <Playlist
                     key={p.id}
-                    id={p.id}
                     image={p.imagePath}
                     title={p.title}
                 />

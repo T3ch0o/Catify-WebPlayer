@@ -10,7 +10,6 @@ const AllPlaylists = function(props) {
             {playlists.map(p =>
                 <Playlist
                     key={p.id}
-                    id={p.id}
                     image={p.imagePath}
                     title={p.title}
                 />
