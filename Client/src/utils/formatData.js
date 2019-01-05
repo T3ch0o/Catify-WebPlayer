@@ -1,5 +1,5 @@
 export default function() {
-    const id = this.props.playlist.id;
+    const id = this.props.playlist.title;
     const type = this.type;
     const payload = {
         likes: this.props.playlist['likes'],
