@@ -24,14 +24,15 @@ class EditPlaylist extends Component {
 
     componentWillMount() {
         const id = this.props.match.params.id;
-        const currentPlaylist = Object.assign({}, this.props.playlists.find(p => p.id === id));
+        const playlistTitle = id.replace(/-+/g, ' ');
+        const currentPlaylist = Object.assign({}, this.props.playlists.find(p => p.title === playlistTitle));
 
         if (!currentPlaylist.hasOwnProperty('id')) {
             this.props.history.push('/profile/manage-playlists');
             return;
         }
 
-        const {title, tags} = Object.assign({}, this.props.playlists.find(p => p.id === id));
+        const { title, tags } = currentPlaylist;
 
         this.setState({title, tags});
     }
@@ -44,12 +45,13 @@ class EditPlaylist extends Component {
 
         if (isValid) {
             const id = this.props.match.params.id;
-            const currentPlaylist = Object.assign({}, this.props.playlists.find(p => p.id === id));
+            const playlistTitle = id.replace(/-+/g, ' ');
+            const currentPlaylist = Object.assign({}, this.props.playlists.find(p => p.title === playlistTitle));
             currentPlaylist.title = payload.title;
 
             this.props.editPlaylist(currentPlaylist, id)
                 .then(() => {
-                    this.props.uploadPlaylistImage(this.state.formData, id)
+                    this.props.uploadPlaylistImage(this.state.formData, currentPlaylist.id)
                         .then(() => {
                             this.props.ajaxSuccess();
                             this.props.history.push('/profile/manage-playlists');
@@ -87,6 +89,7 @@ class EditPlaylist extends Component {
                             />
                             <InputFile
                                 name="image"
+                                formData={this.state.formData}
                                 onChange={fileCollector.bind(this)}
                             />
                             <Input
