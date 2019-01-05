@@ -20,7 +20,7 @@ class ManagePlaylists extends Component {
     }
 
     render() {
-        const { playlists} = this.props;
+        const { playlists } = this.props;
         const role = localStorage.getItem('role');
 
         return (
@@ -29,7 +29,7 @@ class ManagePlaylists extends Component {
                     <div className="heading">
                         <h1>Manage {role === 'Admin' ? 'All' : 'Your'} Playlists</h1>
                     </div>
-                    <Route path="/profile/manage-playlists/create/:id" render={(props) => <AddForm {...props} playlists={playlists}/> }/>
+                    <Route path="/profile/manage-playlists/add-song/:id" render={(props) => <AddForm {...props} playlists={playlists}/> }/>
                     <section className="playlist-container">
                         <MyPlaylists playlists={playlists} deletePlaylist={this.deletePlaylist.bind(this)}/>
                     </section>
