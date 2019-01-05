@@ -39,12 +39,12 @@
             _hostingEnvironment = hostingEnvironment;
         }
 
-        public Playlist Get(string id)
+        public Playlist Get(string title)
         {
             Playlist playlist = _db.Playlists
                                    .Include(p => p.Creator)
                                    .Include(p => p.Songs)
-                                   .FirstOrDefault(p => p.Id == id);
+                                   .FirstOrDefault(p => p.Title == title);
 
             return playlist;
         }
@@ -70,9 +70,9 @@
             return playlist.Id;
         }
 
-        public bool Edit(EditPlaylistBindingModel model, string playlistId, string creatorId, string role)
+        public bool Edit(EditPlaylistBindingModel model, string title, string creatorId, string role)
         {
-            Playlist playlist = _db.Playlists.FirstOrDefault(p => p.Id == playlistId);
+            Playlist playlist = _db.Playlists.FirstOrDefault(p => p.Title == title);
 
             if (playlist == null)
             {
@@ -82,7 +82,6 @@
             if (playlist.CreatorId == creatorId || role == "Administrator")
             {
                 playlist.Title = model.Title;
-                playlist.ImagePath = playlist.ImagePath = Path.Combine("PlaylistImages", "default-cover.jpg");
 
                 _db.SaveChanges();
 
@@ -92,9 +91,9 @@
             return false;
         }
 
-        public bool UpdateStatus(PlaylistStatusBindingModel model, string playlistId, string userId)
+        public bool UpdateStatus(PlaylistStatusBindingModel model, string title, string userId)
         {
-            Playlist playlist = Get(playlistId);
+            Playlist playlist = Get(title);
 
             if (playlist == null)
             {
@@ -106,20 +105,20 @@
             bool isAddFavorite = playlist.Favorites + 1 == model.Favorites;
             bool isRemoveFavorite = playlist.Favorites - 1 == model.Favorites;
 
-            if (!_db.UsersPlaylistStatuses.Any(ps => ps.PlaylistId == playlistId && ps.UserId == userId))
+            if (!_db.UsersPlaylistStatuses.Any(ps => ps.PlaylistId == playlist.Id && ps.UserId == userId))
             {
-                _userService.CreateUserPlaylistStatus(userId, playlistId);
+                _userService.CreateUserPlaylistStatus(userId, playlist.Id);
             }
 
             if ((isAddLike || isRemoveLike) && playlist.Favorites == model.Favorites)
             {
-                _userService.UpdateUserPlaylistStatus(userId, playlistId, "like", isAddLike);
+                _userService.UpdateUserPlaylistStatus(userId, playlist.Id, "like", isAddLike);
 
                 playlist.Likes = model.Likes;
             }
             else if ((isAddFavorite || isRemoveFavorite) && playlist.Likes == model.Likes)
             {
-                _userService.UpdateUserPlaylistStatus(userId, playlistId, "favorite", isAddFavorite);
+                _userService.UpdateUserPlaylistStatus(userId, playlist.Id, "favorite", isAddFavorite);
 
                 playlist.Favorites = model.Favorites;
             }
@@ -133,9 +132,9 @@
             return true;
         }
 
-        public bool Delete(string playlistId, string creatorId, string role)
+        public bool Delete(string title, string creatorId, string role)
         {
-            Playlist playlist = _db.Playlists.FirstOrDefault(p => p.Id == playlistId);
+            Playlist playlist = _db.Playlists.FirstOrDefault(p => p.Title == title);
 
             if (playlist == null)
             {
@@ -144,9 +143,9 @@
 
             if (playlist.CreatorId == creatorId || role == "Administrator")
             {
-                _songService.DeleteAll(playlistId);
+                _songService.DeleteAll(playlist.Id);
 
-                IEnumerable<UsersPlaylistStatus> playlistStatuses = _db.UsersPlaylistStatuses.Where(ps => ps.PlaylistId == playlistId);
+                IEnumerable<UsersPlaylistStatus> playlistStatuses = _db.UsersPlaylistStatuses.Where(ps => ps.PlaylistId == playlist.Id);
 
                 _db.UsersPlaylistStatuses.RemoveRange(playlistStatuses);
                 if (playlist.ImagePath != "PlaylistImages\\default-cover.jpg")
@@ -173,9 +172,12 @@
         {
             Playlist playlist = _db.Playlists.FirstOrDefault(p => p.Id == playlistId);
 
-            playlist.ImagePath = imagePath;
+            if (playlist != null)
+            {
+                playlist.ImagePath = imagePath;
 
-            _db.SaveChanges();
+                _db.SaveChanges();
+            }
         }
     }
 }
