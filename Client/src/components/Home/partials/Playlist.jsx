@@ -10,7 +10,7 @@ const Playlist = function(props) {
     return (
         <Reveal>
             <li className="playlist">
-                <Link className="current-playlist" to={`/web-player/playlist/${title.replaceWhiteSpaceWithLine()}?song=1`}>
+                <Link className="current-playlist" to={`/web-player/playlist/${title.replaceWhitespaceWithLine()}?song=1`}>
                     <img src={imagePath} className="image" alt="error"/>
                     <div className="middle">
                         <h2>{title}</h2>

@@ -9,7 +9,7 @@ const SongsList = function(props) {
 
     return (
         <li>
-            <Link to={`/web-player/playlist/${playlistTitle.replaceWhiteSpaceWithLine()}?song=${index + 1}`}
+            <Link to={`/web-player/playlist/${playlistTitle.replaceWhitespaceWithLine()}?song=${index + 1}`}
                   className={isTrue ? 'active' : ''}><i className={isTrue ? `fa fa-play` : `fa fa-music`}
                                                         aria-hidden="true" onClick={() => choseSong()}/> {songName}
             </Link>

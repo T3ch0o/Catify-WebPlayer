@@ -6,7 +6,7 @@ const Playlist = function(props) {
     const { image, title, deletePlaylist } = props;
 
     const imagePath = `https://localhost:44336/${image}`;
-    const replacedTitle = title.replaceWhiteSpaceWithLine();
+    const replacedTitle = title.replaceWhitespaceWithLine();
 
     return (
         <Fade>
