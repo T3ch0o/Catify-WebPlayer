@@ -33,7 +33,7 @@ class AddForm extends Component {
                     const regex = RegExp(
                         /<title>(.*?)<\/title>/
                     );
-                    const songTitle = decode(regex.exec(html)[1].split('|')[0]);
+                    const songTitle = decode(regex.exec(html)[1].split('|')[0].split('by')[0]).trim();
                     this.props.getPlaylist(id)
                         .then(() => {
                             let isSongExists = false;
