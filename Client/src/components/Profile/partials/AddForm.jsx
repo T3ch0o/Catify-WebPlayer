@@ -34,22 +34,24 @@ class AddForm extends Component {
                         /<title>(.*?)<\/title>/
                     );
                     const songTitle = decode(regex.exec(html)[1].split('|')[0]);
-                    let isTrue = true;
                     this.props.getPlaylist(id)
                         .then(() => {
+                            let isSongExists = false;
                             for (const currentSong of this.props.playlist.songs) {
                                 if (currentSong.title === songTitle) {
-                                    isTrue = false;
+                                    isSongExists = true;
                                 }
                             }
 
-                            if (isTrue) {
+                            if (!isSongExists) {
                                 const payload = {
                                     title: songTitle,
                                     url: songUrl
                                 };
-                                this.props.addSong(payload, id);
+                                this.props.addSong(payload, this.props.playlist.id);
+                                this.setState({ songInfo: 'Song is added.' })
                             } else {
+                                this.setState({ songInfo: 'This song is already in your playlist.' });
                                 throw Error();
                             }
                         })
@@ -78,7 +80,10 @@ class AddForm extends Component {
                         <div className="line"/>
                         <form onSubmit={this.onSubmitHandler} className="add-song-form">
                             {error && <div className="alert">
-                                <p className="warning">This song is already in your playlist.</p>
+                                <p className="warning">{this.state.songInfo}</p>
+                            </div>}
+                            {this.state.songInfo && !error && <div className="alert-success">
+                                <p className="warning">{this.state.songInfo}</p>
                             </div>}
                             <Input
                                 name="songUrl"
