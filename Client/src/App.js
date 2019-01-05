@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import stringExtension from './utils/stringExtension';
+
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
 import PrivateRoute from './components/common/PrivateRoute';
