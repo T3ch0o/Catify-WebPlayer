@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import decode from "unescape";
-import axios from 'axios';
 
 import Input from '../../common/Input';
 import InputFile from '../partials/InputFile';
+
 import validationFunc from '../../../utils/validateForms';
 import dataCollector from '../../../utils/dataCollector';
 import fileCollector from '../../../utils/fileCollector';
+
 import { successAction, errorAction } from '../../../actions/ajaxActions';
 import { createPlaylistAction, getMusicTitleAction, uploadPlaylistImageAction } from '../../../actions/playlistActions';
 
@@ -29,7 +30,6 @@ class CreatePlaylist extends Component {
         event.preventDefault();
         const payload = this.state;
         const validation = validationFunc(payload);
-        console.log(payload);
 
         let validData = true;
         const isValid = validation.validTitle().isValid
@@ -95,6 +95,7 @@ class CreatePlaylist extends Component {
                             />
                             <InputFile
                                 name="image"
+                                formData={this.state.formData}
                                 onChange={fileCollector.bind(this)}
                             />
                             <Input
