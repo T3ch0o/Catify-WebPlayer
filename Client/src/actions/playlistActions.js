@@ -44,7 +44,6 @@ export function getPlaylistAction(id) {
                 dispatch(getPlaylist(response.data));
                 dispatch(successAction());
             })
-            .catch(error => dispatch(errorAction()));
     }
 }
 
