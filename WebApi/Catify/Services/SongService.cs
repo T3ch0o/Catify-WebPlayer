@@ -26,7 +26,7 @@
             {
                 Song song = new Song
                 {
-                    Title = title,
+                    Title = title.Trim(),
                     Url = url,
                     PlaylistId = playlistId
                 };
@@ -40,11 +40,11 @@
             return false;
         }
 
-        public bool Delete(string playlistId, string creatorId, string role)
+        public bool Delete(string playlistId, string title, string creatorId, string role)
         {
             if (_db.Playlists.Any(p => p.Id == playlistId))
             {
-                Song song = _db.Songs.Include(s => s.Playlist).FirstOrDefault(s => s.PlaylistId == playlistId);
+                Song song = _db.Songs.Include(s => s.Playlist).FirstOrDefault(s => s.PlaylistId == playlistId && s.Title == title);
 
                 if (song != null && (song.Playlist.CreatorId == creatorId || role == "Administrator"))
                 {
