@@ -60,11 +60,13 @@ class PlaylistComponent extends Component {
         this.props.playlist.song = query.song - 1;
     }
 
-    deleteSong(id) {
+    deleteSong(id, songName) {
         const playlistId = this.props.match.params.id;
 
-        this.props.removeSong(id)
-            .then(() => this.props.getPlaylist(playlistId));
+        if (this.props.playlist.songs.length > 1) {
+            this.props.removeSong(id, songName.trim())
+                .then(() => this.props.getPlaylist(playlistId));
+        }
     }
 
     render() {
@@ -105,7 +107,7 @@ function mapDispatchToProps(dispatch) {
     return {
         getPlaylist: (id) => dispatch(getPlaylistAction(id)),
         updatePlaylistStatus: (payload, id) => dispatch(updatePlaylistStatusAction(payload, id)),
-        removeSong: (id) => dispatch(removeSongFromPlaylistAction(id))
+        removeSong: (id, title) => dispatch(removeSongFromPlaylistAction(id, title))
     }
 }
 
