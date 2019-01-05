@@ -1,7 +1,14 @@
 import React from 'react';
 
 const InputFile = function(props) {
-    const {name, onChange} = props;
+    const {name, formData, onChange} = props;
+
+    let fileName = '';
+
+    if (formData) {
+        const text = formData.get('file').name;
+        fileName = text.substr(0,20-1)+(text.length>20?'...':'');
+    }
 
     return (
         <div className="input-field">
@@ -13,7 +20,7 @@ const InputFile = function(props) {
                 type="file"
                 onChange={onChange}
             />
-            <label tabIndex="0" htmlFor={name} className="input-file-trigger">Select a Image File...</label>
+            <label tabIndex="0" htmlFor={name} className={fileName ? "input-file-triggered input-file-trigger" : "input-file-trigger"}>{fileName ? fileName : 'Select a Image File...'}</label>
         </div>
     );
 };
