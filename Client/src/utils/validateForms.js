@@ -133,6 +133,7 @@ const validationFunc = function(values) {
         let className = '';
         let errorMessage = '';
         let isValid = true;
+        const titleRegex = new RegExp(/-+/);
 
         if (!title) {
             className = 'is-invalid';
@@ -141,6 +142,10 @@ const validationFunc = function(values) {
         } else if (title.length < 4 || title.length > 16) {
             className = 'is-invalid';
             errorMessage = 'Title must be between 4 and 16 characters.';
+            isValid = false;
+        } else if (titleRegex.test(title)) {
+            className = 'is-invalid';
+            errorMessage = 'You cannot use this symbol for title.';
             isValid = false;
         }
 
