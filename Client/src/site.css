@@ -2,6 +2,7 @@
 @font-face {
   font-family: 'Catify';
   src: url('font/lineto-circular-pro-book.ttf') format('truetype');
+  font-display: block;
 }
 
 * {
@@ -321,6 +322,14 @@ footer > p {
   vertical-align: middle;
   width: 222px;
   text-align: center;
+}
+
+.input-file-triggered {
+  background: #d77100 !important;
+}
+
+.input-file-triggered:hover {
+  background: #cd6f00 !important;
 }
 
 .input-file-trigger:hover {
@@ -867,9 +876,18 @@ label.audio-info {
 }
 
 .alert {
-  margin: 0 auto 30px;
+  margin: 0 auto 7px;
   text-align: center;
   background-color: #f59b23;
+  padding: 15px 10px;
+  width: 400px;
+  border-radius: 2px;
+}
+
+.alert-success{
+  margin: 0 auto 7px;
+  text-align: center;
+  background-color: #1ed760;
   padding: 15px 10px;
   width: 400px;
   border-radius: 2px;
