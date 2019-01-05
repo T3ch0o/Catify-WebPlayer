@@ -37,8 +37,8 @@ const playlist = {
             }
         });
     },
-    removeSong: function(id) {
-        return axios.delete(`https://localhost:44336/api/song/${id}`, {
+    removeSong: function(id, title) {
+        return axios.delete(`https://localhost:44336/api/song/${id}/${title}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('authToken')}`
             }
