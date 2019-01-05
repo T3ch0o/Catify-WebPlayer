@@ -13,7 +13,7 @@ const SongsList = function(props) {
                   className={isTrue ? 'active' : ''}><i className={isTrue ? `fa fa-play` : `fa fa-music`}
                                                         aria-hidden="true" onClick={() => choseSong()}/> {songName}
             </Link>
-            {creator === user || role === 'Admin' ? <button className="song-delete" onClick={() => deleteSong(id)}>
+            {creator === user || role === 'Admin' ? <button className="song-delete" onClick={() => deleteSong(id, songName)}>
                 <i className="fa fa-minus" aria-hidden="true"/> </button> : null}
         </li>
     );
