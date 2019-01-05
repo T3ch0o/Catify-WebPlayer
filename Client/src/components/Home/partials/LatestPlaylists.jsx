@@ -12,7 +12,6 @@ const LatestPlaylist = function(props) {
             {mostRecent.map(p =>
                 <Playlist
                     key={p.id}
-                    id={p.id}
                     image={p.imagePath}
                     title={p.title}
                     creator={p.creator}

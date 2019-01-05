@@ -15,7 +15,6 @@ const SearchedPlaylists = function(props) {
             {searchedPlaylists.map(p =>
                 <Playlist
                     key={p._id}
-                    id={p._id}
                     image={p.imagePath}
                     title={p.title}
                 />

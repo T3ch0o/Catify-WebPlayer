@@ -14,7 +14,6 @@ const MyPlaylists = function(props) {
             {myPlaylists.length !== 0 ? myPlaylists.map(p =>
                 <Playlist
                     key={p.id}
-                    id={p.id}
                     image={p.imagePath}
                     title={p.title}
                 />

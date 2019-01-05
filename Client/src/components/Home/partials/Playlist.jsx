@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import Reveal from 'react-reveal/Reveal'
 
 const Playlist = function(props) {
-    const { id, image, title, creator } = props;
+    const { image, title, creator } = props;
 
     const imagePath = `https://localhost:44336/${image}`;
 
     return (
         <Reveal>
             <li className="playlist">
-                <Link className="current-playlist" to={`/web-player/playlist/${id}?song=1`}>
+                <Link className="current-playlist" to={`/web-player/playlist/${title.replaceWhiteSpaceWithLine()}?song=1`}>
                     <img src={imagePath} className="image" alt="error"/>
                     <div className="middle">
                         <h2>{title}</h2>
