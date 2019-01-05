@@ -10,6 +10,7 @@ import {
 } from '../../../actions/playlistActions';
 import SongsList from './partials/SongsList';
 import formatData from "../../../utils/formatData";
+import { serverUrl } from '../../../utils/StaticFilesServer';
 
 class PlaylistComponent extends Component {
     constructor() {
@@ -73,7 +74,7 @@ class PlaylistComponent extends Component {
                 <section className="playlist-view">
                     <Fade big>
                         <div>
-                            <img className="player-img" src={'https://localhost:44336/' + (imagePath ? imagePath : "PlaylistImages/default-cover.jpg")} alt=""/>
+                            <img className="player-img" src={serverUrl + (imagePath ? imagePath : "PlaylistImages/default-cover.jpg")} alt=""/>
                             <p className="playlist-title">{title}</p>
                             <p className="playlist-creator">{creator}</p>
                             <p className="playlist-information">{songs ? songs.length : 0} songs - {likes} likes - {favorites} favorites</p>

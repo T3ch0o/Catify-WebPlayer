@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Fade from 'react-reveal/Fade';
+import { serverUrl } from '../../../utils/StaticFilesServer';
 
 const Playlist = function(props) {
     const { image, title, deletePlaylist } = props;
 
-    const imagePath = `https://localhost:44336/${image}`;
+    const imagePath = serverUrl + image;
     const replacedTitle = title.replaceWhitespaceWithLine();
 
     return (

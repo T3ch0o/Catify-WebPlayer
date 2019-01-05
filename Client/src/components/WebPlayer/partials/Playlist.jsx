@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Reveal from 'react-reveal/Reveal'
+import { serverUrl } from '../../../utils/StaticFilesServer';
 
 const Playlist = function(props) {
     const { image, title } = props;
-
-    const imagePath = `https://localhost:44336/${image}`;
+    const imagePath = serverUrl + image;
 
     return (
         <Reveal>
