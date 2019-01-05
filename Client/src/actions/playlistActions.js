@@ -131,10 +131,10 @@ export function addSongToPlaylistAction(payload, id) {
     }
 }
 
-export function removeSongFromPlaylistAction(id) {
+export function removeSongFromPlaylistAction(id, title) {
     return function(dispatch) {
         dispatch(beginAction());
-        return playlist.removeSong(id)
+        return playlist.removeSong(id, title)
             .then(response => {
                 if (response.status !== 200) {
                     throw Error();
