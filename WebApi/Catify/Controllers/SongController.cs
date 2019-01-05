@@ -43,18 +43,18 @@
             return BadRequest(ModelState);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}/{title}")]
         [Authorize]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult Delete([FromRoute]string id)
+        public IActionResult Delete([FromRoute]string id, [FromRoute] string title)
         {
             if (ModelState.IsValid)
             {
                 string role = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).Any() ? "Administrator" : "User";
                 string creatorId = User.Identity.Name;
 
-                bool isDeleted = _songService.Delete(id, creatorId, role);
+                bool isDeleted = _songService.Delete(id, title, creatorId, role);
 
                 if (isDeleted)
                 {
