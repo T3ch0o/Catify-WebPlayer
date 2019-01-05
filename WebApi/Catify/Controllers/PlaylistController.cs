@@ -7,6 +7,7 @@
     using AutoMapper;
 
     using Catify.Entities;
+    using Catify.Extensions;
     using Catify.Models;
     using Catify.Models.BindingModels;
     using Catify.Services.Interfaces;
@@ -30,13 +31,13 @@
             _mapper = mapper;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{title}")]
         [AllowAnonymous]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult Get([FromRoute]string id)
+        public IActionResult Get([FromRoute]string title)
         {
-            Playlist playlist = _playlistService.Get(id);
+            Playlist playlist = _playlistService.Get(title.ReplaceLineWithWhitespace());
 
             if (playlist == null)
             {
@@ -100,18 +101,18 @@
             return BadRequest(ModelState);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{title}")]
         [Authorize]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult Put([FromBody]EditPlaylistBindingModel model, [FromRoute]string id)
+        public IActionResult Put([FromBody]EditPlaylistBindingModel model, [FromRoute]string title)
         {
             if (ModelState.IsValid)
             {
                 string role = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).Any() ? "Administrator" : "User";
                 string creatorId = User.Identity.Name;
 
-                bool isUpdated = _playlistService.Edit(model, id, creatorId, role);
+                bool isUpdated = _playlistService.Edit(model, title.ReplaceLineWithWhitespace(), creatorId, role);
 
                 if (isUpdated)
                 {
@@ -124,15 +125,15 @@
             return BadRequest(ModelState);
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("update/{title}")]
         [Authorize]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult UpdateStatus([FromBody]PlaylistStatusBindingModel model, [FromRoute]string id)
+        public IActionResult UpdateStatus([FromBody]PlaylistStatusBindingModel model, [FromRoute]string title)
         {
             if (ModelState.IsValid)
             {
-                bool isUpdated = _playlistService.UpdateStatus(model, id, User.Identity.Name);
+                bool isUpdated = _playlistService.UpdateStatus(model, title.ReplaceLineWithWhitespace(), User.Identity.Name);
 
                 if (isUpdated)
                 {
@@ -145,16 +146,16 @@
             return BadRequest(ModelState);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{title}")]
         [Authorize]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult Delete([FromRoute]string id)
+        public IActionResult Delete([FromRoute]string title)
         {
             string role = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).Any() ? "Administrator" : "User";
             string creatorId = User.Identity.Name;
 
-            bool isDeleted = _playlistService.Delete(id, creatorId, role);
+            bool isDeleted = _playlistService.Delete(title.ReplaceLineWithWhitespace(), creatorId, role);
 
             if (isDeleted)
             {
