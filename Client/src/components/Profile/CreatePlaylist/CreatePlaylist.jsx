@@ -48,7 +48,7 @@ class CreatePlaylist extends Component {
                     const regex = RegExp(
                         /<title>(.*?)<\/title>/
                     );
-                    const songTitle = decode(regex.exec(html)[1].split('|')[0]);
+                    const songTitle = decode(regex.exec(html)[1].split('|')[0].split('by')[0]).trim();
                     payload.tags = payload.tags.startsWith('none') || !payload.tags ? '' : payload.tags;
                     payload.songTitle = songTitle;
 
