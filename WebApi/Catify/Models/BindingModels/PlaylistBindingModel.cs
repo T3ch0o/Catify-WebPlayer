@@ -6,7 +6,7 @@
     {
         [Required(ErrorMessage = "Please enter your playlist title.")]
         [StringLength(16, MinimumLength = 4, ErrorMessage = "Title must be between 4 and 16 characters.")]
-        [RegularExpression(@"\-+", ErrorMessage = "This symbol is forbidden.")]
+        [RegularExpression(@"^[^\-]+$", ErrorMessage = "This symbol is forbidden.")]
         public string Title { get; set; }
 
         [Required(ErrorMessage = "Please enter song url.")]
