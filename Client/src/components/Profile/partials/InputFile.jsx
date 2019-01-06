@@ -7,7 +7,7 @@ const InputFile = function(props) {
 
     if (formData) {
         const text = formData.get('file').name;
-        fileName = text.substr(0,20-1)+(text.length>20?'...':'');
+        fileName = text && text.substr(0,20-1)+(text.length>20?'...':'');
     }
 
     return (
@@ -19,6 +19,8 @@ const InputFile = function(props) {
                 name={name}
                 type="file"
                 onChange={onChange}
+                accept="image/*"
+                multiple
             />
             <label tabIndex="0" htmlFor={name} className={fileName ? "input-file-triggered input-file-trigger" : "input-file-trigger"}>{fileName ? fileName : 'Select a Image File...'}</label>
         </div>
