@@ -51,7 +51,6 @@ class CreatePlaylist extends Component {
                     const songTitle = decode(regex.exec(html)[1].split('|')[0].split('by')[0]).trim();
                     payload.tags = payload.tags.startsWith('none') || !payload.tags ? '' : payload.tags;
                     payload.songTitle = songTitle;
-                    delete payload.formData;
 
                     this.props.createPlaylist(payload)
                         .then(response => {
