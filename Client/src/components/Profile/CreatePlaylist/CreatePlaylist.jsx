@@ -51,6 +51,7 @@ class CreatePlaylist extends Component {
                     const songTitle = decode(regex.exec(html)[1].split('|')[0].split('by')[0]).trim();
                     payload.tags = payload.tags.startsWith('none') || !payload.tags ? '' : payload.tags;
                     payload.songTitle = songTitle;
+                    delete payload.formData;
 
                     this.props.createPlaylist(payload)
                         .then(response => {
@@ -63,13 +64,16 @@ class CreatePlaylist extends Component {
                                     this.props.ajaxSuccess();
                                     this.props.history.push('/profile/manage-playlists');
                                 });
+                        })
+                        .catch(error => {
+                            this.props.ajaxError();
                         });
                 });
         }
     }
 
     render() {
-        const { begin } = this.props;
+        const { begin, error } = this.props;
         const validation = validationFunc(this.state);
 
         return (
@@ -86,6 +90,9 @@ class CreatePlaylist extends Component {
                         </div>}
                         <h1 className="form-heading">Create Playlist</h1>
                         <div className="line"/>
+                        {error && <div className="alert">
+                            <p className="warning">Please fill the form correctly.</p>
+                        </div>}
                         <form onSubmit={this.onSubmitHandler} encType="multipart/form-data">
                             <Input
                                 name="title"
