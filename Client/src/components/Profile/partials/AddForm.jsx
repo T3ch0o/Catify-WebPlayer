@@ -33,29 +33,31 @@ class AddForm extends Component {
                     const regex = RegExp(
                         /<title>(.*?)<\/title>/
                     );
-                    const songTitle = decode(regex.exec(html)[1].split('|')[0].split('by')[0]).trim();
-                    this.props.getPlaylist(id)
-                        .then(() => {
-                            let isSongExists = false;
-                            for (const currentSong of this.props.playlist.songs) {
-                                if (currentSong.title === songTitle) {
-                                    isSongExists = true;
+                    if (html) {
+                        const songTitle = decode(regex.exec(html)[1].split('|')[0].split('by')[0]).trim();
+                        this.props.getPlaylist(id)
+                            .then(() => {
+                                let isSongExists = false;
+                                for (const currentSong of this.props.playlist.songs) {
+                                    if (currentSong.title === songTitle) {
+                                        isSongExists = true;
+                                    }
                                 }
-                            }
 
-                            if (!isSongExists) {
-                                const payload = {
-                                    title: songTitle,
-                                    url: songUrl
-                                };
-                                this.props.addSong(payload, this.props.playlist.id);
-                                this.setState({ songInfo: 'Song is added.' })
-                            } else {
-                                this.setState({ songInfo: 'This song is already in your playlist.' });
-                                throw Error();
-                            }
-                        })
-                        .catch(error => this.props.ajaxError());
+                                if (!isSongExists) {
+                                    const payload = {
+                                        title: songTitle,
+                                        url: songUrl
+                                    };
+                                    this.props.addSong(payload, this.props.playlist.id);
+                                    this.setState({ songInfo: 'Song is added.' })
+                                } else {
+                                    this.setState({ songInfo: 'This song is already in your playlist.' });
+                                    throw Error();
+                                }
+                            })
+                            .catch(error => this.props.ajaxError());
+                    }
                 });
         }
     }
