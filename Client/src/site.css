@@ -532,7 +532,7 @@ footer > p {
 }
 
 .content-container .playlist-container ul{
-  margin-top: 20px;
+  margin: 20px 0;
 }
 
 .search {
@@ -966,7 +966,7 @@ label.audio-info {
 }
 
 .playlist-playing {
-  min-height: 1000px;
+  min-height: 67vh;
 }
 
 .songs-list {
@@ -974,6 +974,7 @@ label.audio-info {
   margin-left: 80px;
   width: 600px;
   padding-bottom: 100px;
+  max-height: 350px;
 }
 
 .songs-list li {
@@ -1142,3 +1143,12 @@ label.audio-info {
   text-decoration: underline;
 }
 
+.ps .ps__rail-x:hover,
+.ps .ps__rail-y:hover,
+.ps .ps__rail-x:focus,
+.ps .ps__rail-y:focus,
+.ps .ps__rail-x.ps--clicking,
+.ps .ps__rail-y.ps--clicking {
+  background-color: transparent;
+  opacity: 0.9;
+}
