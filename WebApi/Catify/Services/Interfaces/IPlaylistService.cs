@@ -1,6 +1,7 @@
 ﻿namespace Catify.Services.Interfaces
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     using Catify.Entities;
     using Catify.Models.BindingModels;
@@ -9,7 +10,7 @@
     {
         Playlist Get(string title);
 
-        IEnumerable<Playlist> GetAll();
+        IQueryable<Playlist> All { get; }
 
         string Create(PlaylistBindingModel model, string creatorId);
 

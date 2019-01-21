@@ -39,6 +39,9 @@
             _hostingEnvironment = hostingEnvironment;
         }
 
+        public IQueryable<Playlist> All => _db.Playlists
+                                              .Include(playlist => playlist.Creator);
+
         public Playlist Get(string title)
         {
             Playlist playlist = _db.Playlists
@@ -47,12 +50,6 @@
                                    .FirstOrDefault(p => p.Title == title);
 
             return playlist;
-        }
-
-        public IEnumerable<Playlist> GetAll()
-        {
-            return _db.Playlists
-                      .Include(playlist => playlist.Creator);
         }
 
         public string Create(PlaylistBindingModel model, string creatorId)

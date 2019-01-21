@@ -63,7 +63,7 @@
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult All()
         {
-            IEnumerable<Playlist> playlists = _playlistService.GetAll();
+            IEnumerable<Playlist> playlists = _playlistService.All;
             UsersPlaylistStatus[] favoritePlaylists = _userService.GetUserFavoritePlaylists(User.Identity.Name).ToArray();
             List<PlaylistsReturnModel> playlistsModel = new List<PlaylistsReturnModel>();
 
