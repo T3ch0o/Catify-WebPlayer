@@ -7,7 +7,7 @@ const SearchedPlaylists = function(props) {
     let searchedPlaylists = [];
 
     if (search) {
-        searchedPlaylists = playlists.filter(p => p.title.toLowerCase().startsWith(search));
+        searchedPlaylists = playlists.filter(p => p.title.toLowerCase().startsWith(search.toLowerCase()));
     }
 
     return (
